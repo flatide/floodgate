@@ -1,0 +1,128 @@
+spring:
+  profiles:
+    active: local
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+server:
+  servlet:
+    context-path: /floodgate
+    multipart:
+      max-file-size: -1
+      max-request-size: 1
+
+#server.tomcat.max-threads=400
+
+#spring.datasource.url=jdbc:h2:mem:testdb
+
+#spring.datasource.url=jdbc:h2:~/floodgate
+#spring.datasource.driverClassName=org.h2.Driver
+#spring.datasource.username=test
+#spring.datasource.password=test1234
+
+#spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+
+#####################################################
+---
+spring:
+  profiles: local
+
+logging:
+  level:
+    root: info
+
+floodgate:
+  config:
+    channel:
+      meta:
+        datasource: db_postgres
+      log:
+        datasource: db_postgres
+      payload:
+        folder: payload
+      spooling:
+        folder: spooling
+    #channel.log.datasource=log-file
+    # Start-Up datasource
+    #channel.meta.datasource=meta-file
+
+
+    # Datasources
+    datasource:
+      mysql:
+        ID: MYSQL
+        CONNECTOR: JDBC
+        DBTYPE: mysql
+        URL: jdbc:mysql://192.168.0.31:3306/test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        USER: test
+        PASSWORD: Test12345@
+
+      payload-backup:
+        type: FILE
+        #meta.source.backupFolder=backup
+        filename:
+          Flow: backup/<DATE>_<ID>.json
+          Connection: backup/<DATE>.json
+
+
+      db:
+        type: DB
+    #datasource.db.url=jdbc:mysql://localhost:3306/test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        url: jdbc:h2:~/floodgate
+        user: test
+        password: test1234
+
+      db_postgres:
+        type: DB
+          #datasource.db.url=jdbc:mysql://localhost:3306/test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        url: jdbc:postgresql://localhost:55000/postgres
+        user: postgres
+        password: postgrespw
+
+      log-file:
+        type: FILE
+        format: JSON
+        filename:
+          API_HISTORY: logs/<TABLE>/<ID>.json
+
+      meta-file:
+        type: FILE
+        filename:
+          api: meta/api.json
+          flow: meta/<ID>.json
+          connection: meta/connection.json
+    # for FILE
+    # TODO remove file features
+    # history ?? ???? ??? ?
+      backup:
+        type: FILE
+      #meta.source.backupFolder=backup
+        filename:
+          Flow: backup/<DATE>_<ID>.json
+          Connection: backup/<DATE>.json
+
+    # default Meta Source
+    # TODO remove and implement internally
+    meta:
+      source:
+        tableForAPI: api
+        tableForFlow: flow
+        tableForConnection: datasource
+
+
+
+    # For DB
+    #meta.source.url=jdbc:oracle:thin:@localhost:1521/xe
+    #meta.source.user=system
+    #meta.source.password=oracle
+
+        url: jdbc:mysql://localhost:3306/test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        user: test
+        password: test1234
+
+    #meta.source.url=jdbc:h2:~/test2
+    #meta.source.user=sa
+    #meta.source.password=test1234
