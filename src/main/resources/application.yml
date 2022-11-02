@@ -7,6 +7,9 @@ spring:
       path: /h2-console
 
 server:
+  title: Floodate
+  version: '@project.version@'
+  shutdown: graceful
   servlet:
     context-path: /floodgate
     multipart:
