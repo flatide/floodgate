@@ -30,9 +30,9 @@ import com.flatide.floodgate.agent.meta.MetaManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.naming.Name;
+import java.io.BufferedReader;
+import java.io.Reader;
 import java.sql.*;
-import java.sql.Date;
 import java.util.*;
 
 public class FDataSourceDB extends FDataSourceDefault {
@@ -207,7 +207,26 @@ public class FDataSourceDB extends FDataSourceDefault {
                         String name = rsmeta.getColumnName(i);
                         Object obj = rs.getObject(i);
 
-                        row.put(name, obj);
+			if(obj instanceof Clob) {
+			    final StringBuilder sb = new StringBuilder();
+			    try {
+			        final Reader reader = ((Clob) obj).getCharacterStream();
+				final BufferedReader br = new BufferedReader(reader);
+
+				int b;
+				while(-1 != (b = br.read())) {
+				    sb.append((char) b);
+				}
+
+				br.close();
+				row.put(name, sb.toString());
+			    } catch(Exception e) {
+			        e.printStackTrace();
+				throw e;
+			    }
+			} else {
+				row.put(name, obj);
+			}
                         /*
                         if( obj instanceof String) {
                             // check whether it is JSON or not
