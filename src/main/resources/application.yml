@@ -1,37 +1,34 @@
 spring:
   profiles:
-    active: local
+    active: '@spring.profiles.active@'
   h2:
     console:
       enabled: true
       path: /h2-console
 
+application:
+  version: 'V@project.version@'
+
 server:
   title: Floodate
   version: '@project.version@'
-  shutdown: graceful
   servlet:
     context-path: /floodgate
     multipart:
       max-file-size: -1
       max-request-size: 1
+  shutdown: graceful
 
-#server.tomcat.max-threads=400
-
-#spring.datasource.url=jdbc:h2:mem:testdb
-
-#spring.datasource.url=jdbc:h2:~/floodgate
-#spring.datasource.driverClassName=org.h2.Driver
-#spring.datasource.username=test
-#spring.datasource.password=test1234
-
-#spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-
-
-#####################################################
----
-spring:
-  profiles: local
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
 
 logging:
   level:
@@ -129,3 +126,26 @@ floodgate:
     #meta.source.url=jdbc:h2:~/test2
     #meta.source.user=sa
     #meta.source.password=test1234
+
+
+#server.tomcat.max-threads=400
+
+#spring.datasource.url=jdbc:h2:mem:testdb
+
+#spring.datasource.url=jdbc:h2:~/floodgate
+#spring.datasource.driverClassName=org.h2.Driver
+#spring.datasource.username=test
+#spring.datasource.password=test1234
+
+#spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+
+#####################################################
+---
+spring:
+  config:
+    activte:
+      on-profiles: local
+
+server:
+  port: 8080

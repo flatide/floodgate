@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.flatide</groupId>
 	<artifactId>floodgate</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>floodgate</name>
 	<description>Floodgate</description>
 	<properties>
@@ -54,6 +54,18 @@
 		</dependency-->
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>local</spring.profiles.active>
+				<spring.profiles.version>1.0.0</spring.profiles.version>
+			</properties>
+		</profile>
+	</profiles>
 	<build>
 		<plugins>
 			<plugin>
