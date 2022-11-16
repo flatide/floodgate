@@ -71,7 +71,7 @@ public class ChannelAgent {
         java.sql.Timestamp startTime = new java.sql.Timestamp(System.currentTimeMillis());
         log.put("ID", id.toString());
         log.put("START_TIME", startTime);
-	    String historyTable = (String) ConfigurationManager.shared().getConfig().get("channel.log.table");
+        String historyTable = (String) ConfigurationManager.shared().getConfig().get("channel.log.table");
         LoggingManager.shared().insert(historyTable, "ID",  log);
 
 
