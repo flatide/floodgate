@@ -43,6 +43,8 @@ public class FloodgateApplication {
     @PostConstruct
     public void init() {
         try {
+            System.out.println(CAEnv.getInstance().getAddress());
+
             ConfigurationManager.shared().setConfig(config);
 
             //MetaManager.shared().setConfig(configuration);

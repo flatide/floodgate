@@ -78,7 +78,7 @@ public class ApiController {
             @RequestBody Map<String, Object> data
     ) throws Exception {
         try {
-            MetaManager.shared().update((String) config.get("meta.source.tableforAPI"), "ID", data, true);
+            MetaManager.shared().update((String) config.get("meta.source.tableForAPI"), "ID", data, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");

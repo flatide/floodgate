@@ -323,10 +323,18 @@ public class FDataSourceDB extends FDataSourceDefault {
         StringBuilder query = new StringBuilder();
         query.append("INSERT INTO ");
         query.append(tableName);
-        query.append(" ( ");
+        query.append(" ( CREATE_DATE, MODIFY_DATE, ");
 
         StringBuilder param = new StringBuilder();
-        param.append(" ) VALUES ( ");
+
+        String driver = (String)ConfigurationManager.shared().getConfig().get("datasource." + name + ".driver");
+        String kindOfDB = driver.substring(0, driver.indexOf("."));
+        if( kindOfDB.equalsIgnoreCase("orace")) {
+            param.append(" ) VALUES ( sysdate, sysdate, ");
+        } else {
+            param.append(" ) VALUES ( CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ");
+        }
+
         int i = 0;
         for( String col : row.keySet() ) {
             if( i > 0 ) {

@@ -1,4 +1,4 @@
-package com.flatide.foodgate.api.admin;
+package com.flatide.floodgate.api.admin;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
