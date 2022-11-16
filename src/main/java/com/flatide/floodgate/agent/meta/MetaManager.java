@@ -245,8 +245,40 @@ public final class MetaManager {
         return null;
     }
 
+    public List<Map<String, Object>> readList(String tableName, String key) {
+        return readList(tableName, key, false);
+    }
+
+    public List<Map<String, Object>> readList(String tableName, String key, boolean fromSource ) {
+        fromSource = true;
+
+        List resultList = null;
+        MetaTable table = this.cache.get(tableName);
+        if( table == null ) {
+            table = new MetaTable();
+            this.cache.put(tableName, table);
+        }
+
+        String keyName = this.tableKeyMap.get(tableName);
+        if( keyName == null ) {
+            keyName = "ID";
+        }
+
+        if( fromSource ) {
+            try {
+                resultList = this.dataSource.readList(tableName, keyName, key);
+
+                //table.put(key, result);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return resultList;
+    }
+
     // 메타 수정
-    public boolean insert(String tableName, String keyName, Map<String, Object> data, boolean toSource) {
+    public boolean insert(String tableName, String keyName, Map<String, Object> data, boolean toSource) throws Exception {
         // TODO Thread Safe
         MetaTable table = this.cache.get(tableName);
 
@@ -272,9 +304,8 @@ public final class MetaManager {
             return result;
         } catch(Exception e) {
             e.printStackTrace();
+            throw e;
         }
-
-        return false;
     }
 
     public boolean update(String tableName, String keyName, Map<String, Object> data) {

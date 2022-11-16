@@ -36,6 +36,7 @@ public interface FDataSource {
 
     boolean create(String key);
     Map<String, Object> read(String tableName, String keyColumn, String key) throws Exception;
+    List<Map<String, Object>> readList(String tableName, String keyColumn, String key) throws Exception;
     boolean insert(String tableName, String keyColumn, Map<String, Object> row) throws Exception;
     boolean update(String tableName, String keyColumn, Map<String, Object> row) throws Exception;
     boolean delete(String tableName, String keyColumn, String key, boolean backup) throws Exception;

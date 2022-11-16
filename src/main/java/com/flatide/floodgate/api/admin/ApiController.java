@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins =  "*")
@@ -42,40 +43,13 @@ public class ApiController {
     private Config config;
 
     @GetMapping(path="/api")
-    public @ResponseBody Map get(
+    public @ResponseBody List get(
             @RequestParam(required = false) String id,
             @RequestParam(required = false, defaultValue = "1") int from,
             @RequestParam(required = false, defaultValue = "-1") int to
     ) {
         try {
-            if( id == null) {
-                MetaTable metaTable = MetaManager.shared().getTable((String) config.get("meta.source.tableForAPI"));
-                if( metaTable == null ) {
-                    return null;
-                }
-                if( from == 1 && to == -1 )
-                    return metaTable.getRows();
-                else {
-                    Map<Object, Object> temp = new LinkedHashMap<>();
-                    LinkedHashMap<String, ? extends Map> result = (LinkedHashMap<String, ? extends Map>) metaTable.getRows();
-                    to = result.size();
-                    int i = 1;
-                    for(Map.Entry entry : result.entrySet()) {
-                        if( i > to )
-                            break;
-
-                        if( i >= from ) {
-                            temp.put(entry.getKey(), entry.getValue());
-                        }
-
-                        i++;
-                    }
-
-                    return temp;
-                }
-            } else {
-                return MetaManager.shared().read((String) config.get("meta.source.tableForAPI"), id);
-            }
+            return MetaManager.shared().readList((String) config.get("meta.source.tableforAPI"), id);
         } catch(Exception e) {
             e.printStackTrace();
             throw e;
@@ -85,10 +59,9 @@ public class ApiController {
     @PostMapping(path="/api")
     public @ResponseBody Map post(
             @RequestBody Map<String, Object> data
-    ) {
+    ) throws Exception {
         try {
-            String key = (String) data.get("ID");
-            MetaManager.shared().insert((String) config.get("meta.source.tableForAPI"), key, data, true);
+            MetaManager.shared().insert((String) config.get("meta.source.tableForAPI"), "ID", data, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");
@@ -101,12 +74,11 @@ public class ApiController {
 
     @PutMapping(path="/api")
     public @ResponseBody Map put(
-            @RequestBody Map<String, Object> data,
-            @RequestParam String table,
-            @RequestParam String key
-    ) {
+            @RequestParam(required = true ) String id,
+            @RequestBody Map<String, Object> data
+    ) throws Exception {
         try {
-            MetaManager.shared().update(table, key, data, true);
+            MetaManager.shared().update((String) config.get("meta.source.tableforAPI"), "ID", data, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");

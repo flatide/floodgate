@@ -61,7 +61,7 @@ public class MetaController {
             @RequestBody Map<String, Object> data,
             @RequestParam String table,
             @RequestParam String key
-    ) {
+    ) throws Exception {
         try {
             MetaManager.shared().insert(table, key, data, true);
 

@@ -207,26 +207,26 @@ public class FDataSourceDB extends FDataSourceDefault {
                         String name = rsmeta.getColumnName(i);
                         Object obj = rs.getObject(i);
 
-			if(obj instanceof Clob) {
-			    final StringBuilder sb = new StringBuilder();
-			    try {
-			        final Reader reader = ((Clob) obj).getCharacterStream();
-				final BufferedReader br = new BufferedReader(reader);
+			        if(obj instanceof Clob) {
+			            final StringBuilder sb = new StringBuilder();
+			            try {
+			                final Reader reader = ((Clob) obj).getCharacterStream();
+				            final BufferedReader br = new BufferedReader(reader);
 
-				int b;
-				while(-1 != (b = br.read())) {
-				    sb.append((char) b);
-				}
+				            int b;
+				            while(-1 != (b = br.read())) {
+				                sb.append((char) b);
+				            }
 
-				br.close();
-				row.put(name, sb.toString());
-			    } catch(Exception e) {
-			        e.printStackTrace();
-				throw e;
-			    }
-			} else {
-				row.put(name, obj);
-			}
+				            br.close();
+				            row.put(name, sb.toString());
+			            } catch(Exception e) {
+			                e.printStackTrace();
+				            throw e;
+			            }
+			        } else {
+				        row.put(name, obj);
+			        }
                         /*
                         if( obj instanceof String) {
                             // check whether it is JSON or not
@@ -251,6 +251,64 @@ public class FDataSourceDB extends FDataSourceDefault {
                 }
             }
             return null;
+        } catch(SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public List<Map<String, Object>> readList(String tableName, String keyColumn, String key) throws Exception {
+        String query = "SELECT * FROM " + tableName;
+        if( key != null && !key.isEmpty()) {
+            query += " WHERE " + keyColumn + " like ?";
+        }
+        logger.info(query);
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        try( PreparedStatement ps = this.connection.prepareStatement(query) ) {
+            if( key != null && !key.isEmpty()) {
+                ps.setString(1, "%" + key + "%");
+            }
+
+            try (ResultSet rs = ps.executeQuery() ) {
+                
+                while (rs.next()) {
+                    Map<String, Object> row = new HashMap<>();
+
+                    ResultSetMetaData rsmeta = rs.getMetaData();
+                    int count = rsmeta.getColumnCount();
+                    for( int i = 1; i <= count; i++) {
+                        String name = rsmeta.getColumnName(i);
+                        Object obj = rs.getObject(i);
+                        if (obj instanceof Clob) {
+                            final StringBuilder sb = new StringBuilder();
+                            try {
+                                final Reader reader = ((Clob) obj).getCharacterStream();
+                                final BufferedReader br = new BufferedReader(reader);
+
+                                int b;
+                                while (-1 != (b = br.read())) {
+                                    sb.append((char) b);
+                                }
+
+                                br.close();
+                                row.put(name, sb.toString());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                throw e;
+                            }
+                        } else {
+                            row.put(name, obj);
+                        }
+                    }
+
+                    result.add(row);
+                }
+            }
+
+            return result;
         } catch(SQLException e) {
             e.printStackTrace();
             throw e;
@@ -319,9 +377,8 @@ public class FDataSourceDB extends FDataSourceDefault {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
-
-        return false;
     }
 
     @Override
@@ -346,9 +403,7 @@ public class FDataSourceDB extends FDataSourceDefault {
             query.append( " = ?");
             i++;
         }
-        query.append(" WHERE ");
-        query.append(keyColumn);
-        query.append(" = ? ");
+        query.append(" WHERE ID = ? ");
 
         logger.info(query.toString());
 
@@ -369,6 +424,11 @@ public class FDataSourceDB extends FDataSourceDefault {
                         ps.setTime(i++, (java.sql.Time) data);
                     } else if( data instanceof java.sql.Timestamp) {
                         ps.setTimestamp(i++, (java.sql.Timestamp) data);
+                    } else {
+                        ObjectMapper mapper = new ObjectMapper();
+                        String json = mapper.writeValueAsString(data);
+
+                        ps.setString(i++, json);
                     }
                 }
             }
@@ -378,9 +438,8 @@ public class FDataSourceDB extends FDataSourceDefault {
             return count != 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         }
-
-        return false;
     }
 
     @Override

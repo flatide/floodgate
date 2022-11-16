@@ -69,6 +69,11 @@ public class FDataSourceDefault implements FDataSource {
     }
 
     @Override
+    public List<Map<String, Object>> readList(String tableName, String keyColumn, String key) throws Exception {
+        return null;
+    }
+
+    @Override
     public boolean insert(String tableName, String keyColumn, Map<String, Object> row) throws Exception {
         return false;
     }
