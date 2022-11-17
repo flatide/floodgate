@@ -84,7 +84,7 @@ public class FDataSourceDefault implements FDataSource {
     }
 
     @Override
-    public boolean delete(String tableName, String keyColumn, String key, boolean backup) throws Exception {
+    public boolean delete(String tableName, String keyColumn, String key) throws Exception {
         return false;
     }
 

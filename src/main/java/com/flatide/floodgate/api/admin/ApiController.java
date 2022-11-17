@@ -24,14 +24,12 @@
 
 package com.flatide.floodgate.api.admin;
 
-import com.flatide.floodgate.agent.Config;
+import com.flatide.floodgate.ConfigurationManager;
 import com.flatide.floodgate.agent.meta.MetaManager;
-import com.flatide.floodgate.agent.meta.MetaTable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.bind.annotation.*;
+import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,9 +37,6 @@ import java.util.Map;
 @RestController
 @RequestMapping(path="/admin")
 public class ApiController {
-    @Autowired
-    private Config config;
-
     @GetMapping(path="/api")
     public @ResponseBody List get(
             @RequestParam(required = false) String id,
@@ -49,7 +44,7 @@ public class ApiController {
             @RequestParam(required = false, defaultValue = "-1") int to
     ) {
         try {
-            return MetaManager.shared().readList((String) config.get("meta.source.tableforAPI"), id);
+            return MetaManager.shared().readList((String) ConfigurationManager.shared().getConfig().get("meta.source.tableforAPI"), id);
         } catch(Exception e) {
             e.printStackTrace();
             throw e;
@@ -61,7 +56,12 @@ public class ApiController {
             @RequestBody Map<String, Object> data
     ) throws Exception {
         try {
-            MetaManager.shared().insert((String) config.get("meta.source.tableForAPI"), "ID", data, true);
+            long cur = System.currentTimeMillis();
+            Timestamp current = new Timestamp(cur);
+
+            data.put("CREATE_DATE", current);
+            data.put("MODIFY_DATE", current);
+            MetaManager.shared().insert((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"), "ID", data, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");
@@ -78,7 +78,39 @@ public class ApiController {
             @RequestBody Map<String, Object> data
     ) throws Exception {
         try {
-            MetaManager.shared().update((String) config.get("meta.source.tableForAPI"), "ID", data, true);
+            Map old = MetaManager.shared().read((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"), (String) data.get("ID"));
+
+            long cur = System.currentTimeMillis();
+            Timestamp current = new Timestamp(cur);
+            data.put("MODIFY_DATE", current);
+
+            old.put("TABLE_NAME", (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"));
+
+            MetaManager.shared().insert((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForMetaHistory"), "ID", old, true);
+
+            MetaManager.shared().update((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"), "ID", data, true);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("result", "Ok");
+            return result;
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @DeleteMapping(path="/api")
+    public @ResponseBody Map delete(
+        @RequestParam(required = true) String id
+        ) throws Exception {
+        try {
+            Map old = MetaManager.shared().read((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"), id);
+
+            old.put("TABLE_NAME", (String) ConfigurationManager.shared().getConfig().get("mta.source.tableForAPI"));
+
+            MetaManager.shared().insert((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForMetaHistory"), "ID", old, true);
+
+            MetaManager.shared().delete((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"), id, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");

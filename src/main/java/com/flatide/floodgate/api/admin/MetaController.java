@@ -39,7 +39,7 @@ public class MetaController {
     public @ResponseBody Map get(
             @RequestParam String table,
             @RequestParam(required = false) String id
-    ) {
+    ) throws Exception {
         try {
             if( id == null) {
                 MetaTable metaTable = MetaManager.shared().getTable(table);
@@ -79,7 +79,7 @@ public class MetaController {
             @RequestBody Map<String, Object> data,
             @RequestParam String table,
             @RequestParam String key
-    ) {
+    ) throws Exception {
         try {
             MetaManager.shared().update(table, key, data, true);
 

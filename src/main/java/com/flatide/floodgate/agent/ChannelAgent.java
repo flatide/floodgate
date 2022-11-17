@@ -54,7 +54,7 @@ public class ChannelAgent {
 
     public Object getContext(String key) { return this.context.get(key); }
 
-    public Map<String, Object> process(FGInputStream current, String api) {
+    public Map<String, Object> process(FGInputStream current, String api) throws Exception {
         addContext(Context.CONTEXT_KEY.API, api);
 
         // Unique ID 생성

@@ -71,9 +71,10 @@ floodgate:
       db:
         type: DB
     #datasource.db.url=jdbc:mysql://localhost:3306/test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        driver: org.h2.Driver
         url: jdbc:h2:~/floodgate
-        user: test
-        password: test1234
+        user: floodgate 
+        password: password 
 
       db_postgres:
         type: DB
@@ -108,9 +109,10 @@ floodgate:
     # TODO remove and implement internally
     meta:
       source:
-        tableForAPI: api
-        tableForFlow: flow
-        tableForConnection: datasource
+        tableForAPI: FLOODGATE_API
+        tableForFlow: FLOODGATE_FLOW
+        tableForConnection: FLOODGATE_DATASOURCE
+        tableForMetaHistory: FLOODGATE_META_HISTORY
 
 
 
@@ -149,3 +151,19 @@ spring:
 
 server:
   port: 8080
+
+
+floodgate:
+    config:
+        channel:
+            log:
+                datasource: db
+                table: FLOODGATE_HISTORY
+
+    datasource:
+        db:
+            type: DB
+            driver: org.h2.Driver
+            url: jdbc:h2:./floodgate
+            user: floodgate
+            password: password

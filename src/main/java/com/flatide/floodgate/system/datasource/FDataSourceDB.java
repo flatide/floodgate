@@ -98,96 +98,6 @@ public class FDataSourceDB extends FDataSourceDefault {
         return false;
     }
 
-    /*
-    @Override
-    public Map<String, Object> readData(String tableName, String keyColumn, String key) throws Exception {
-        String query = "SELECT DATA FROM " + tableName + " WHERE " + keyColumn + " = ?";
-        logger.debug(query);
-
-        try (PreparedStatement ps = this.connection.prepareStatement(query) ){
-            ps.setString(1, key);
-
-            try (ResultSet rs = ps.executeQuery() ) {
-                //ResultSetMetaData rsmeta = rs.getMetaData();
-
-                if (rs.next()) {
-                    String data = rs.getString(1);
-                    ObjectMapper mapper = new ObjectMapper();
-
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> row = (Map<String, Object>) mapper.readValue(data, LinkedHashMap.class);
-                    return row;
-                }
-            }
-            return null;
-        } catch(SQLException e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
-    @Override
-    public boolean insertData(String tableName, String keyColumn, String key, Map<String, Object> row) {
-        String query = "INSERT INTO " + tableName + " ( " + keyColumn + ", DATA ) VALUES ( ?, ?)";
-
-        logger.debug(query);
-
-        try (PreparedStatement ps = this.connection.prepareStatement(query)) {
-
-            ObjectMapper mapper = new ObjectMapper();
-            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(row);
-
-            ps.setString(1, key);
-            ps.setString(2, json);
-
-            ps.executeUpdate();
-
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean updateData(String tableName, String keyColumn, String key, Map<String, Object> row) throws Exception {
-        String query = "UPDATE " + tableName + " SET DATA = ? WHERE " + keyColumn + " = ?";
-
-        logger.debug(query);
-
-        try (PreparedStatement ps = this.connection.prepareStatement(query)) {
-
-            ObjectMapper mapper = new ObjectMapper();
-            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(row);
-            ps.setString(1, json);
-            ps.setString(2, key);
-
-            int count = ps.executeUpdate();
-            return count != 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean deleteData(String tableName, String keyColumn, String key, boolean backup) {
-        String query = "DELETE " + tableName + " WHERE " + keyColumn + " = ?";
-
-        try (PreparedStatement ps = this.connection.prepareStatement(query)) {
-
-            ps.setString(1, key);
-
-            ps.execute();
-        } catch (SQLException execption) {
-            execption.printStackTrace();
-        }
-
-        return false;
-    }*/
-
     @Override
     public Map<String, Object> read(String tableName, String keyColumn, String key) throws Exception {
         String query = "SELECT * FROM " + tableName + " WHERE " + keyColumn + " = ?";
@@ -227,27 +137,8 @@ public class FDataSourceDB extends FDataSourceDefault {
 			            } else {
 				            row.put(name, obj);
 			            }
-                        /*
-                        if( obj instanceof String) {
-                            // check whether it is JSON or not
-                            ObjectMapper mapper = new ObjectMapper();
-                            try {
-                                Map<String, Object> json = (Map<String, Object>) mapper.readValue((String) obj, Map.class);
-                                row.put(name, json);
-                            } catch(Exception e) {
-                                // it is not JSON
-                                row.put(name, obj);
-                            }
-                        } else {
-                            row.put(name, obj);
-                        }*/
                     }
-                    //String data = rs.getString(1);
-                    //ObjectMapper mapper = new ObjectMapper();
-
-                    //@SuppressWarnings("unchecked")
-                    //Map<String, Object> row = (Map<String, Object>) mapper.readValue(data, LinkedHashMap.class);
-                    return row;
+                     return row;
                 }
             }
             return null;
@@ -317,23 +208,15 @@ public class FDataSourceDB extends FDataSourceDefault {
 
     @Override
     public boolean insert(String tableName, String keyColumn, Map<String, Object> row) throws Exception {
-        //String query = "INSERT INTO " + tableName + " ( " + keyColumn + ", DATA ) VALUES ( ?, ?)";
         List<String> colList = new ArrayList<>();
 
         StringBuilder query = new StringBuilder();
         query.append("INSERT INTO ");
         query.append(tableName);
-        query.append(" ( CREATE_DATE, MODIFY_DATE, ");
+        query.append(" ( ");
 
         StringBuilder param = new StringBuilder();
-
-        String driver = (String)ConfigurationManager.shared().getConfig().get("datasource." + name + ".driver");
-        String kindOfDB = driver.substring(0, driver.indexOf("."));
-        if( kindOfDB.equalsIgnoreCase("oracle")) {
-            param.append(" ) VALUES ( sysdate, sysdate, ");
-        } else {
-            param.append(" ) VALUES ( CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ");
-        }
+        param.append(" ) VALUES ( ");
 
         int i = 0;
         for( String col : row.keySet() ) {
@@ -391,7 +274,6 @@ public class FDataSourceDB extends FDataSourceDefault {
 
     @Override
     public boolean update(String tableName, String keyColumn, Map<String, Object> row) throws Exception {
-        //String query = "UPDATE " + tableName + " SET DATA = ? WHERE " + keyColumn + " = ?";
         List<String> colList = new ArrayList<>();
 
         String key = (String) row.remove(keyColumn);
@@ -451,8 +333,25 @@ public class FDataSourceDB extends FDataSourceDefault {
     }
 
     @Override
-    public boolean delete(String tableName, String keyColumn, String key, boolean backup) throws Exception {
-        return false;
+    public boolean delete(String tableName, String keyColumn, String key) throws Exception {
+        StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ")
+            .append(tableName)
+            .append(" WHERE ")
+            .append(keyColumn)
+            .append(" = ?" );
+
+        try (PreparedStatement ps = this.connection.prepareStatement(query.toString())) {
+            ps.setQueryTimeout(0);
+
+            ps.setString(1, key);
+
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Override

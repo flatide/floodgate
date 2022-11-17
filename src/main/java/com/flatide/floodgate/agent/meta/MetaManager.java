@@ -176,12 +176,12 @@ public final class MetaManager {
     }
 
     // 메타 조회
-    public Map<String, Object> read(String tableName, String key ) {
+    public Map<String, Object> read(String tableName, String key ) throws Exception {
         return read(tableName, key, false);
     }
 
     // 메타 조회
-    public Map<String, Object> read(String tableName, String key, boolean fromSource ) {
+    public Map<String, Object> read(String tableName, String key, boolean fromSource ) throws Exception {
         // TODO for testing
         fromSource = true;
 
@@ -200,46 +200,11 @@ public final class MetaManager {
             try {
                 Map<String, Object> result = this.dataSource.read(tableName, keyName, key);
 
-                table.put(key, result );
+                return result;
             } catch(Exception e ) {
                 e.printStackTrace();
+                throw e;
             }
-        }
-
-        //return table.get(key);
-
-        // 테이블 구조를 ID, DATA로 통합
-        Map<String, Object> temp = table.get(key);
-        if( temp == null ) {
-            temp = table.get(key.toLowerCase(Locale.ROOT));
-        }
-
-        if( temp == null )
-            return null;
-
-        /*Map<String, Object> result = (Map<String, Object>) temp.get("DATA");
-        if( result == null ) {
-            result = (Map<String, Object>) temp.get("data");   // for PostgreSQL
-        }
-
-        return result;
-
-         */
-
-        String result = (String) temp.get("DATA");
-        if( result == null ) {
-            result = (String) temp.get("data");   // for PostgreSQL
-        }
-
-        if( result == null )
-            return null;
-
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Map<String, Object> json = (Map<String, Object>) mapper.readValue(result, Map.class);
-            return json;
-        } catch(IOException e) {
-            e.printStackTrace();
         }
 
         return null;
@@ -308,12 +273,12 @@ public final class MetaManager {
         }
     }
 
-    public boolean update(String tableName, String keyName, Map<String, Object> data) {
+    public boolean update(String tableName, String keyName, Map<String, Object> data) throws Exception {
         return update(tableName, keyName, data, false);
     }
 
     // 메타 수정
-    public boolean update(String tableName, String keyName, Map<String, Object> data, boolean toSource) {
+    public boolean update(String tableName, String keyName, Map<String, Object> data, boolean toSource) throws Exception {
         // TODO Thread Safe
         MetaTable table = this.cache.get(tableName);
 
@@ -338,13 +303,12 @@ public final class MetaManager {
             return result;
         } catch(Exception e) {
             e.printStackTrace();
+            throw e;
         }
-
-        return false;
     }
 
     // 메타 삭제
-    public boolean delete(String tableName, String key, boolean toSource, boolean backup) {
+    public boolean delete(String tableName, String key, boolean toSource) throws Exception {
         MetaTable table = this.cache.get(tableName);
 
         if (table == null) {
@@ -357,21 +321,18 @@ public final class MetaManager {
         }
 
         try {
-            if (this.cache.get(tableName) != null) {
-                boolean result = true;
-                if (toSource) {
-                    result = dataSource.delete(tableName, keyName, key, backup);
-                }
-                if (result) {
-                    table.remove(key);
-                }
-                return true;
+            boolean result = true;
+            if (toSource) {
+                result = dataSource.delete(tableName, keyName, key);
             }
+            if (result) {
+                table.remove(key);
+            }
+            return true;
         } catch(Exception e) {
             e.printStackTrace();
+            throw e;
         }
-
-        return false;
     }
 
     public boolean load(String tableName) throws Exception {

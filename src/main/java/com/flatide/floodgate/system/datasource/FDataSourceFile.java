@@ -333,7 +333,7 @@ public class FDataSourceFile extends FDataSourceDefault {
     }
 
     @Override
-    public boolean delete(String tableName, String keyColumn, String key, boolean backup) throws Exception {
+    public boolean delete(String tableName, String keyColumn, String key) throws Exception {
         String filename = this.path + "/" + makeFilename(tableName, key);
 
 //        File folder = new File(this.path + "/" + config.getSource().get("backupFolder"));
@@ -361,11 +361,6 @@ public class FDataSourceFile extends FDataSourceDefault {
             if( !file.delete() ) {
                 throw new IOException("Cannot delete file " + filename);
             }
-
-            if( backup ) {
-                //file.renameTo(new File(backupFilename));
-                writeJson(backupFilename, data);
-            }
         } else {
             File file = new File(filename);
             if( !file.exists()) {
@@ -379,12 +374,6 @@ public class FDataSourceFile extends FDataSourceDefault {
 
             @SuppressWarnings("unchecked")
             Map<String, Object> row = (Map<String, Object>) data.get(key);
-            if( backup ) {
-                Map<String, Object> backupData = new HashMap<>();
-                backupData.put(key, row);
-
-                writeJson(backupFilename, backupData);
-            }
             data.remove(key);
             writeJson(filename, data);
         }

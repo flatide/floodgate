@@ -84,7 +84,7 @@ public class ChannelJob implements Callable<Map> {
     }
 
     @Override
-    public Map call() {
+    public Map call() throws Exception {
         String flowInfoTable = (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForFlow");
         Map<String, Object> flowInfo = MetaManager.shared().read( flowInfoTable, target);
         //Map<String, Object> flowInfo = (Map<String, Object>) flowInfoResult.get("FLOW");
