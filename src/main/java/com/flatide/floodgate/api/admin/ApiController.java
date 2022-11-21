@@ -74,6 +74,7 @@ public class ApiController {
 
     @PutMapping(path="/api")
     public @ResponseBody Map put(
+            @RequestBody Map<String, Object> data
     ) throws Exception {
         try {
             Map old = MetaManager.shared().read((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"), (String) data.get("ID"));
