@@ -44,7 +44,7 @@ public class ApiController {
             @RequestParam(required = false, defaultValue = "-1") int to
     ) {
         try {
-            return MetaManager.shared().readList((String) ConfigurationManager.shared().getConfig().get("meta.source.tableforAPI"), id);
+            return MetaManager.shared().readList((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"), id);
         } catch(Exception e) {
             e.printStackTrace();
             throw e;
@@ -74,8 +74,6 @@ public class ApiController {
 
     @PutMapping(path="/api")
     public @ResponseBody Map put(
-            @RequestParam(required = true ) String id,
-            @RequestBody Map<String, Object> data
     ) throws Exception {
         try {
             Map old = MetaManager.shared().read((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"), (String) data.get("ID"));
@@ -101,12 +99,12 @@ public class ApiController {
 
     @DeleteMapping(path="/api")
     public @ResponseBody Map delete(
-        @RequestParam(required = true) String id
+            @RequestParam(required = true) String id
         ) throws Exception {
         try {
             Map old = MetaManager.shared().read((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"), id);
 
-            old.put("TABLE_NAME", (String) ConfigurationManager.shared().getConfig().get("mta.source.tableForAPI"));
+            old.put("TABLE_NAME", (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI"));
 
             MetaManager.shared().insert((String) ConfigurationManager.shared().getConfig().get("meta.source.tableForMetaHistory"), "ID", old, true);
 
