@@ -46,4 +46,12 @@ public class ConfigurationManager {
     public Config getConfig() {
         return this.config;
     }
+
+    public Object get(String path) {
+        return this.config.get(path);
+    }
+
+    public String getString(String path) {
+        return (String) this.config.get(path);
+    }
 }
