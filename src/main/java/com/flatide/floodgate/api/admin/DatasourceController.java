@@ -36,8 +36,8 @@ import java.util.Map;
 @CrossOrigin(origins =  "*")
 @RestController
 @RequestMapping(path="/admin")
-public class ApiController {
-    @GetMapping(path="/api")
+public class DatasourceController {
+    @GetMapping(path="/datasource")
     public @ResponseBody List get(
             @RequestParam(required = false) String id,
             @RequestParam(required = false, defaultValue = "1") int from,
@@ -51,7 +51,7 @@ public class ApiController {
         }
     }
 
-    @PostMapping(path="/api")
+    @PostMapping(path="/datasource")
     public @ResponseBody Map post(
             @RequestBody Map<String, Object> data
     ) throws Exception {
@@ -72,7 +72,7 @@ public class ApiController {
         }
     }
 
-    @PutMapping(path="/api")
+    @PutMapping(path="/datasource")
     public @ResponseBody Map put(
             @RequestBody Map<String, Object> data
     ) throws Exception {
@@ -98,7 +98,7 @@ public class ApiController {
         }
     }
 
-    @DeleteMapping(path="/api")
+    @DeleteMapping(path="/datasource")
     public @ResponseBody Map delete(
             @RequestParam(required = true) String id
         ) throws Exception {

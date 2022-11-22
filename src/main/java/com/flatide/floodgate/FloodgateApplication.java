@@ -60,9 +60,9 @@ public class FloodgateApplication {
             //MetaManager.shared().load(configuration.getMeta().get("source.tableForAPI"));
             //MetaManager.shared().load(configuration.getMeta().get("source.tableForFlow"));
             //MetaManager.shared().load(configuration.getMeta().get("source.tableForConnection"));
-            MetaManager.shared().load((String) config.get("meta.source.tableForAPI"));
-            MetaManager.shared().load((String) config.get("meta.source.tableForFlow"));
-            MetaManager.shared().load((String) config.get("meta.source.tableForConnection"));
+            MetaManager.shared().load((String) config.get(FloodgateConstants.TABLE_FOR_API));
+            MetaManager.shared().load((String) config.get(FloodgateConstants.TABLE_FOR_FLOW));
+            MetaManager.shared().load((String) config.get(FloodgateConstants.TABLE_FOR_DATASOURCE));
 
             //holder = new byte[104800000];
         } catch(Exception e) {

@@ -117,7 +117,7 @@ public class FDataSourceDB extends FDataSourceDefault {
                         String name = rsmeta.getColumnName(i);
                         Object obj = rs.getObject(i);
 
-				        row.put(name, obj);
+                        row.put(name, obj);
                     }
                     return row;
                 }
@@ -153,8 +153,7 @@ public class FDataSourceDB extends FDataSourceDefault {
                     int count = rsmeta.getColumnCount();
                     for( int i = 1; i <= count; i++) {
                         String name = rsmeta.getColumnName(i);
-                        Object obj = rs.getObject(i);
-                        row.put(name, obj);
+                        row.put(name, rs.getObject(i));
                     }
 
                     result.add(row);

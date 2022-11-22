@@ -27,20 +27,20 @@ package com.flatide.floodgate.agent.meta;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flatide.floodgate.ConfigurationManager;
 import com.flatide.floodgate.agent.Config;
-import com.flatide.floodgate.agent.Configuration;
 import com.flatide.floodgate.system.datasource.FDataSource;
 import com.flatide.floodgate.system.datasource.FDataSourceDB;
 import com.flatide.floodgate.system.datasource.FDataSourceDefault;
 import com.flatide.floodgate.system.datasource.FDataSourceFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-//import org.hibernate.transform.ToListResultTransformer;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.Reader;
+import java.sql.Clob;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /*
     TODO Meta의 생성, 삭제, 변경등은 반드시 DataSource에 먼저 반영하고 캐시를 업데이트 하는 순서로 진행할 것!
@@ -259,29 +259,31 @@ public final class MetaManager {
             try {
                 resultList = this.dataSource.readList(tableName, keyName, key);
 
-                for(Entry<String, Object> e : result.entrySet()) {
-                    Object obj = e.getValue();
+                for(Map<String, Object> result : resultList ) {
+                    for(Entry<String, Object> e : result.entrySet()) {
+                        Object obj = e.getValue();
 
-                    if( obj instanceof oracle.sql.TIMESTAMP) {
-                        // Jackson cannot (de)serialize oracle.sql.TIMESTAMP, converting it to java.sql.Timestamp
-                        obj = ((oracle.sql.TIMESTAMP)obj).timestampValue();
-                        result.put(e.getKey(), obj);
-                    } else if (obj instanceof Clob) {
-                        // Jackson cannot convert LOB directly, converting it to String
-                        final StringBuilder sb = new StringBuilder();
-                        final Reader reader = ((Clob) obj).getCharacterStream();
-                        final BufferedReader br = new BufferedReader(reader);
+                        if( obj instanceof oracle.sql.TIMESTAMP) {
+                            // Jackson cannot (de)serialize oracle.sql.TIMESTAMP, converting it to java.sql.Timestamp
+                            obj = ((oracle.sql.TIMESTAMP)obj).timestampValue();
+                            result.put(e.getKey(), obj);
+                        } else if (obj instanceof Clob) {
+                            // Jackson cannot convert LOB directly, converting it to String
+                            final StringBuilder sb = new StringBuilder();
+                            final Reader reader = ((Clob) obj).getCharacterStream();
+                            final BufferedReader br = new BufferedReader(reader);
 
-                        int b;
-                        while (-1 != (b = br.read())) {
-                            sb.append((char) b);
+                            int b;
+                            while (-1 != (b = br.read())) {
+                                sb.append((char) b);
+                            }
+
+                            br.close();
+
+                            ObjectMapper mapper = new ObjectMapper();
+                            Map json = mapper.readValue(sb.toString(), Map.class);
+                            result.put(e.getKey(), json);
                         }
-
-                        br.close();
-
-                        ObjectMapper mapper = new ObjectMapper();
-                        Map json = mapper.readValue(sb.toString(), Map.class);
-                        result.put(e.getKey(), json);
                     }
                 }
 
@@ -293,7 +295,7 @@ public final class MetaManager {
             }
         }
 
-        reutrn null;
+        return null;
     }
 
     // 메타 수정
