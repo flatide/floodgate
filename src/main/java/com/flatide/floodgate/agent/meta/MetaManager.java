@@ -243,7 +243,7 @@ public final class MetaManager {
     public List<Map<String, Object>> readList(String tableName, String key, boolean fromSource ) throws Exception {
         fromSource = true;
 
-        List resultList = null;
+        List<Map<String, Object>> resultList = null;
         MetaTable table = this.cache.get(tableName);
         if( table == null ) {
             table = new MetaTable();
