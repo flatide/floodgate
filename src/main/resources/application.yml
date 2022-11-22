@@ -38,9 +38,11 @@ floodgate:
   config:
     channel:
       meta:
-        datasource: db_postgres
+        datasource: db
       log:
-        datasource: db_postgres
+        datasource: db
+        tableForAPI: FLOODGATE_API_HISTORY
+        tableForFlow: FLOODGATE_FLOW_HISTORY
       payload:
         folder: payload
       spooling:
@@ -111,7 +113,7 @@ floodgate:
       source:
         tableForAPI: FLOODGATE_API
         tableForFlow: FLOODGATE_FLOW
-        tableForConnection: FLOODGATE_DATASOURCE
+        tableForDatasource: FLOODGATE_DATASOURCE
         tableForMetaHistory: FLOODGATE_META_HISTORY
 
 
