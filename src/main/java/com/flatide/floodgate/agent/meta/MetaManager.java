@@ -281,7 +281,7 @@ public final class MetaManager {
                             br.close();
 
                             ObjectMapper mapper = new ObjectMapper();
-                            Map json = mapper.readValue(sb.toString(), Map.class);
+                            Map<String, Object> json = (Map<String, Object>) mapper.readValue(sb.toString(), Map.class);
                             result.put(e.getKey(), json);
                         }
                     }
