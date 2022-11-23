@@ -25,6 +25,7 @@
 package com.flatide.floodgate.agent.spool;
 
 import com.flatide.floodgate.ConfigurationManager;
+import com.flatide.floodgate.FloodgateConstants;
 import com.flatide.floodgate.agent.Context;
 import com.flatide.floodgate.agent.flow.Flow;
 import com.flatide.floodgate.agent.flow.stream.FGInputStream;
@@ -52,7 +53,7 @@ class SpoolJob implements Callable<Map> {
     @Override
     public Map call() {
         System.out.println("Spooled Job " + flowId + " start at : " + Thread.currentThread().getId());
-        String spoolingPath = (String) ConfigurationManager.shared().getConfig().get("channel.spooling.folder");
+        String spoolingPath = ConfigurationManager.shared().getString(FloodgateConstants.CHANNEL_SPOOLING_FOLDER);
 
         Map<String, Object> result = new HashMap<>();
         try {

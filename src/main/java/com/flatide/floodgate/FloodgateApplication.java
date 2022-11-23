@@ -38,8 +38,6 @@ public class FloodgateApplication {
     @Autowired
     private Config config;
 
-    static byte[] holder = null;
-
     @PostConstruct
     public void init() {
         try {
@@ -47,24 +45,15 @@ public class FloodgateApplication {
 
             ConfigurationManager.shared().setConfig(config);
 
-            //MetaManager.shared().setConfig(configuration);
-
-            //String metaSourceType = configuration.getChannel().get("meta.datasource");
             String metaDatasource = (String) config.get("channel.meta.datasource");
             MetaManager.shared().changeSource(metaDatasource, false);
 
-            //String logDatasource = configuration.getChannel().get("log.datasource");
             String logDatasource = (String) config.get("channel.log.datasource");
             LoggingManager.shared().changeSource(logDatasource, false);
 
-            //MetaManager.shared().load(configuration.getMeta().get("source.tableForAPI"));
-            //MetaManager.shared().load(configuration.getMeta().get("source.tableForFlow"));
-            //MetaManager.shared().load(configuration.getMeta().get("source.tableForConnection"));
-            MetaManager.shared().load((String) config.get(FloodgateConstants.TABLE_FOR_API));
-            MetaManager.shared().load((String) config.get(FloodgateConstants.TABLE_FOR_FLOW));
-            MetaManager.shared().load((String) config.get(FloodgateConstants.TABLE_FOR_DATASOURCE));
-
-            //holder = new byte[104800000];
+            MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_API));
+            MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW));
+            MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE));
         } catch(Exception e) {
             e.printStackTrace();
         }

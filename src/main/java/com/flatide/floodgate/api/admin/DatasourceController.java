@@ -45,7 +45,7 @@ public class DatasourceController {
             @RequestParam(required = false, defaultValue = "-1") int to
     ) throws Exception {
         try {
-            return MetaManager.shared().readList(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_DATASOURCE), id);
+            return MetaManager.shared().readList(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), id);
         } catch(Exception e) {
             e.printStackTrace();
             throw e;
@@ -62,7 +62,7 @@ public class DatasourceController {
 
             data.put("CREATE_DATE", current);
             data.put("MODIFY_DATE", current);
-            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_DATASOURCE), "ID", data, true);
+            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), "ID", data, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");
@@ -78,17 +78,17 @@ public class DatasourceController {
             @RequestBody Map<String, Object> data
     ) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_DATASOURCE), (String) data.get("ID"));
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), (String) data.get("ID"));
 
             long cur = System.currentTimeMillis();
             Timestamp current = new Timestamp(cur);
             data.put("MODIFY_DATE", current);
 
-            old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_DATASOURCE));
+            old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE));
 
-            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_META_HISTORY), "ID", old, true);
+            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_META_HISTORY), "ID", old, true);
 
-            MetaManager.shared().update(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_DATASOURCE), "ID", data, true);
+            MetaManager.shared().update(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), "ID", data, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");
@@ -104,13 +104,13 @@ public class DatasourceController {
             @RequestParam(required = true) String id
         ) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_DATASOURCE), id);
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), id);
 
-            old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_DATASOURCE));
+            old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE));
 
-            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_META_HISTORY), "ID", old, true);
+            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_META_HISTORY), "ID", old, true);
 
-            MetaManager.shared().delete(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_DATASOURCE), id, true);
+            MetaManager.shared().delete(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), id, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");

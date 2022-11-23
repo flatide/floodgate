@@ -25,18 +25,12 @@
 package com.flatide.floodgate.agent.logging;
 
 import com.flatide.floodgate.ConfigurationManager;
-import com.flatide.floodgate.agent.Config;
-import com.flatide.floodgate.agent.Configuration;
-import com.flatide.floodgate.agent.meta.MetaManager;
-import com.flatide.floodgate.agent.meta.MetaTable;
 import com.flatide.floodgate.system.datasource.FDataSource;
 import com.flatide.floodgate.system.datasource.FDataSourceDB;
 import com.flatide.floodgate.system.datasource.FDataSourceDefault;
 import com.flatide.floodgate.system.datasource.FDataSourceFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +76,7 @@ public final class LoggingManager {
 
     public FDataSource changeSource(String source, boolean reset) throws Exception {
         if( !source.equals(this.dataSource.getName()) ) {
-            String type = (String) ConfigurationManager.shared().getConfig().get("datasource." + source + ".type");
+            String type = ConfigurationManager.shared().getString("datasource." + source + ".type");
             if (type.equals("FILE")) {
                 dataSource = new FDataSourceFile(source);
             } else if (type.equals("DB")) {

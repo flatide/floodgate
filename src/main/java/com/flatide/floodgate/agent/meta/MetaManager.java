@@ -26,7 +26,6 @@ package com.flatide.floodgate.agent.meta;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flatide.floodgate.ConfigurationManager;
-import com.flatide.floodgate.agent.Config;
 import com.flatide.floodgate.system.datasource.FDataSource;
 import com.flatide.floodgate.system.datasource.FDataSourceDB;
 import com.flatide.floodgate.system.datasource.FDataSourceDefault;
@@ -60,9 +59,6 @@ public final class MetaManager {
     // data source
     FDataSource dataSource;
 
-    // config
-    Config config = ConfigurationManager.shared().getConfig();
-
     public static MetaManager shared() {
         return instance;
     }
@@ -77,7 +73,7 @@ public final class MetaManager {
 
     public FDataSource changeSource(String source, boolean reset) throws Exception {
         if( !source.equals(getMetaSourceName()) ) {
-            String type = (String) config.get("datasource."+ source + ".type");
+            String type = ConfigurationManager.shared().getString("datasource."+ source + ".type");
             if (type.equals("FILE")) {
                 dataSource = new FDataSourceFile(source);
             } else if (type.equals("DB")) {
@@ -139,14 +135,6 @@ public final class MetaManager {
         this.tableKeyMap = new HashMap<>();
         this.dataSource = FGDataSource;
         FGDataSource.connect();
-    }
-
-    public Config getConfig() {
-        return config;
-    }
-
-    public void setConfig(Config config) {
-        this.config = config;
     }
 
     public MetaTable getTable(String tableName ) {

@@ -26,6 +26,7 @@ package com.flatide.floodgate.agent.spool;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flatide.floodgate.ConfigurationManager;
+import com.flatide.floodgate.FloodgateConstants;
 import com.flatide.floodgate.agent.Context;
 import com.flatide.floodgate.agent.flow.stream.FGInputStream;
 import com.flatide.floodgate.agent.flow.stream.FGSharableInputCurrent;
@@ -51,9 +52,9 @@ public class SpoolingManager {
 
         Thread thread = new Thread( () -> {
             System.out.println("Spooling thread started...");
-            String spoolingPath = (String) ConfigurationManager.shared().getConfig().get("channel.spooling.folder");
-            String flowInfoTable = (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForFlow");
-            String payloadPath = (String) ConfigurationManager.shared().getConfig().get("channel.payload.folder");
+            String spoolingPath = ConfigurationManager.shared().getString(FloodgateConstants.CHANNEL_SPOOLING_FOLDER);
+            String flowInfoTable = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW);
+            String payloadPath = ConfigurationManager.shared().getString(FloodgateConstants.CHANNEL_PAYLOAD_FOLDER);
             while(true) {
                 try {
                     long cur = System.currentTimeMillis();

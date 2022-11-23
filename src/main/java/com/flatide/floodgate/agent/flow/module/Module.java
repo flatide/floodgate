@@ -25,6 +25,7 @@
 package com.flatide.floodgate.agent.flow.module;
 
 import com.flatide.floodgate.ConfigurationManager;
+import com.flatide.floodgate.FloodgateConstants;
 import com.flatide.floodgate.agent.template.DocumentTemplate;
 import com.flatide.floodgate.agent.connector.ConnectorTag;
 import com.flatide.floodgate.agent.connector.ConnectorBase;
@@ -75,7 +76,7 @@ public class Module {
                 logger.info(context.getId() + " : No connect info for module " + this.id);
             } else {
                 if (connectRef instanceof String) {
-                    String table = (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForConnection");
+                    String table = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE);
                     connInfo = MetaManager.shared().read(table, (String) connectRef);
                 } else {
                     @SuppressWarnings("unchecked")

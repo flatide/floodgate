@@ -25,7 +25,6 @@
 package com.flatide.floodgate;
 
 import com.flatide.floodgate.agent.Config;
-import com.flatide.floodgate.agent.Configuration;
 
 public class ConfigurationManager {
     private static final ConfigurationManager instance = new ConfigurationManager();

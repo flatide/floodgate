@@ -25,12 +25,11 @@
 package com.flatide.floodgate.agent;
 
 import com.flatide.floodgate.ConfigurationManager;
+import com.flatide.floodgate.FloodgateConstants;
 import com.flatide.floodgate.agent.flow.stream.FGInputStream;
 import com.flatide.floodgate.agent.flow.stream.carrier.Carrier;
 import com.flatide.floodgate.agent.logging.LoggingManager;
 import com.flatide.floodgate.agent.meta.*;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -62,7 +61,7 @@ public class ChannelAgent {
         addContext(Context.CONTEXT_KEY.CHANNEL_ID, id.toString());
 
         // API 정보 확인
-        String apiTable = (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForAPI");
+        String apiTable = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API);
         Map<String, Object> apiInfo = MetaManager.shared().read( apiTable, api);
 
         Map<String, Object> log = new HashMap<>();
@@ -71,7 +70,7 @@ public class ChannelAgent {
         java.sql.Timestamp startTime = new java.sql.Timestamp(System.currentTimeMillis());
         log.put("ID", id.toString());
         log.put("START_TIME", startTime);
-        String historyTable = (String) ConfigurationManager.shared().getConfig().get("channel.log.table");
+        String historyTable = ConfigurationManager.shared().getString("channel.log.table");
         LoggingManager.shared().insert(historyTable, "ID",  log);
 
 
@@ -110,7 +109,7 @@ public class ChannelAgent {
         if( (boolean) apiInfo.get("BACKUP_PAYLOAD") == true) {
             Carrier carrier = current.getCarrier();
             try {
-                String path = (String) ConfigurationManager.shared().getConfig().get("channel.payload.folder");
+                String path = ConfigurationManager.shared().getString("channel.payload.folder");
                 carrier.flushToFile(path + "/" + id.toString());
             } catch(Exception e) {
 
@@ -121,7 +120,7 @@ public class ChannelAgent {
 
         String logString = "";
         try {
-            String flowInfoTable = (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForFlow");
+            String flowInfoTable = ConfigurationManager.shared().getString("meta.source.tableForFlow");
             Map<String, Object> concurrencyInfo = (Map<String, Object>) apiInfo.get("CONCURRENCY");
 
             // 병렬실행인 경우

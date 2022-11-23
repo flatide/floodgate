@@ -45,7 +45,7 @@ public class FlowController {
             @RequestParam(required = false, defaultValue = "-1") int to
     ) throws Exception {
         try {
-            return MetaManager.shared().readList(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_FLOW), id);
+            return MetaManager.shared().readList(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW), id);
         } catch(Exception e) {
             e.printStackTrace();
             throw e;
@@ -62,7 +62,7 @@ public class FlowController {
 
             data.put("CREATE_DATE", current);
             data.put("MODIFY_DATE", current);
-            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_FLOW), "ID", data, true);
+            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW), "ID", data, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");
@@ -78,17 +78,17 @@ public class FlowController {
             @RequestBody Map<String, Object> data
     ) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_FLOW), (String) data.get("ID"));
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW), (String) data.get("ID"));
 
             long cur = System.currentTimeMillis();
             Timestamp current = new Timestamp(cur);
             data.put("MODIFY_DATE", current);
 
-            old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_FLOW));
+            old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW));
 
-            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_META_HISTORY), "ID", old, true);
+            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_META_HISTORY), "ID", old, true);
 
-            MetaManager.shared().update(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_FLOW), "ID", data, true);
+            MetaManager.shared().update(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW), "ID", data, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");
@@ -104,13 +104,13 @@ public class FlowController {
             @RequestParam(required = true) String id
         ) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_FLOW), id);
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW), id);
 
-            old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_FLOW));
+            old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW));
 
-            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_META_HISTORY), "ID", old, true);
+            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_META_HISTORY), "ID", old, true);
 
-            MetaManager.shared().delete(ConfigurationManager.shared().getString(FloodgateConstants.TABLE_FOR_FLOW), id, true);
+            MetaManager.shared().delete(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW), id, true);
 
             Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");
