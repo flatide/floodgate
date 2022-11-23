@@ -72,7 +72,7 @@ public class ChannelAgent {
         log.put("ID", id.toString());
         log.put("API_ID", api);
         log.put("START_TIME", startTime);
-        String historyTable = ConfigurationManager.shared().getString("channel.log.tableForAPI");
+        String historyTable = ConfigurationManager.shared().getString(FloodgateConstants.CHANNEL_LOG_TABLE_FOR_API);
         LoggingManager.shared().insert(historyTable, "ID",  log);
 
 
@@ -111,7 +111,7 @@ public class ChannelAgent {
         if( (boolean) apiInfo.get("BACKUP_PAYLOAD") == true) {
             Carrier carrier = current.getCarrier();
             try {
-                String path = ConfigurationManager.shared().getString("channel.payload.folder");
+                String path = ConfigurationManager.shared().getString(FloodgateConstants.CHANNEL_PAYLOAD_FOLDER);
                 carrier.flushToFile(path + "/" + id.toString());
             } catch(Exception e) {
 
@@ -122,7 +122,7 @@ public class ChannelAgent {
 
         String logString = "";
         try {
-            String flowInfoTable = ConfigurationManager.shared().getString("meta.source.tableForFlow");
+            String flowInfoTable = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW);
             Map<String, Object> concurrencyInfo = (Map<String, Object>) apiInfo.get("CONCURRENCY");
 
             // 병렬실행인 경우

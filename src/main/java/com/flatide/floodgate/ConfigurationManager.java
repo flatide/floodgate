@@ -42,10 +42,6 @@ public class ConfigurationManager {
         this.config = config;
     }
 
-    public Config getConfig() {
-        return this.config;
-    }
-
     public Object get(String path) {
         return this.config.get(path);
     }

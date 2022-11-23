@@ -47,9 +47,9 @@ public class FDataSourceDB extends FDataSourceDefault {
     public FDataSourceDB(String name) {
         super(name);
 
-        this.url = (String) ConfigurationManager.shared().getConfig().get("datasource." + name + ".url");
-        this.user = (String) ConfigurationManager.shared().getConfig().get("datasource." + name + ".user");
-        this.password = (String) ConfigurationManager.shared().getConfig().get("datasource." + name + ".password");
+        this.url = ConfigurationManager.shared().getString("datasource." + name + ".url");
+        this.user = ConfigurationManager.shared().getString("datasource." + name + ".user");
+        this.password = ConfigurationManager.shared().getString("datasource." + name + ".password");
     }
 
     @Override

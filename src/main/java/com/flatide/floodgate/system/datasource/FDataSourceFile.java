@@ -26,8 +26,8 @@ package com.flatide.floodgate.system.datasource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flatide.floodgate.ConfigurationManager;
-import com.flatide.floodgate.agent.Config;
-import com.flatide.floodgate.agent.Configuration;
+import com.flatide.floodgate.FloodgateConstants;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,7 +52,7 @@ public class FDataSourceFile extends FDataSourceDefault {
         super(name);
 
         this.path = ".";
-        this.type = (String) ConfigurationManager.shared().getConfig().get("datasource." + name + ".format");
+        this.type = ConfigurationManager.shared().getString("datasource." + name + ".format");
     }
 
     /*public MetaSourceFile(String path, String type) {
@@ -341,7 +341,7 @@ public class FDataSourceFile extends FDataSourceDefault {
 //            folder.mkdir();
 //        }
 
-        String backupFilename = this.path + "/" + ConfigurationManager.shared().getConfig().get("meta.source.backupFolder") + "/" + makeBackupFilename(tableName, key);
+        String backupFilename = this.path + "/" + ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_BACKUP_FOLDER) + "/" + makeBackupFilename(tableName, key);
         File backupFile = new File(backupFilename);
         if( backupFile.exists()) {
             backupFilename += "." + UUID.randomUUID();
@@ -372,8 +372,7 @@ public class FDataSourceFile extends FDataSourceDefault {
                 return false;   // key is not exist
             }
 
-            @SuppressWarnings("unchecked")
-            Map<String, Object> row = (Map<String, Object>) data.get(key);
+            Map<String, Object> row = (Map) data.get(key);
             data.remove(key);
             writeJson(filename, data);
         }
@@ -397,28 +396,15 @@ public class FDataSourceFile extends FDataSourceDefault {
     }
 
     String getRule(String tableName) {
-        Config config = ConfigurationManager.shared().getConfig();
-        String rule = "";
-
-        //rule = config.getMeta().get("source.filenameRule." + tableName);
-        rule = (String) config.get("datasource." + this.name + ".filename." + tableName);
-        /*
-        if( tableName.equals(config.getMeta().get("source.tableForFlow")) ) {
-            rule = config.getMeta().get("source.filenameRuleForFlow");
-        } else if(tableName.equals(config.getMeta().get("source.tableForConnection")) ) {
-            rule = config.getMeta().get("source.filenameRuleForConnection");
-        }*/
-
-        return rule;
+        return ConfigurationManager.shared().getString("datasource." + this.name + ".filename." + tableName);
     }
 
     String getBackupRule(String tableName) {
-        Config config = ConfigurationManager.shared().getConfig();
         String rule = "";
-        if( tableName.equals(config.get("meta.source.tableForFlow")) ) {
-            rule = (String) config.get("meta.source.backupRuleForFlow");
-        } else if(tableName.equals(config.get("meta.source.tableForConnection")) ) {
-            rule = (String) config.get("meta.source.backupRuleForConnection");
+        if( tableName.equals(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW)) ) {
+            rule = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_BACKUP_RULE_FOR_FLOW);
+        } else if(tableName.equals(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE)) ) {
+            rule = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_BACKUP_RULE_FOR_DATASOURCE);
         }
 
         return rule;

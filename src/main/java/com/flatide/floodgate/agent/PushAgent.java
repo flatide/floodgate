@@ -25,6 +25,7 @@
 package com.flatide.floodgate.agent;
 
 import com.flatide.floodgate.ConfigurationManager;
+import com.flatide.floodgate.FloodgateConstants;
 import com.flatide.floodgate.agent.flow.Flow;
 import com.flatide.floodgate.agent.flow.stream.FGInputStream;
 import com.flatide.floodgate.agent.meta.MetaManager;
@@ -55,7 +56,7 @@ public class PushAgent extends Spoolable {
         Map<String, Object> result = new HashMap<>();
 
         try {
-            String tableName = (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForFlow");
+            String tableName = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW);
             Map<String, Object> flowInfoResult = MetaManager.shared().read( tableName, ifId);
             Map<String, Object> flowInfo = (Map<String, Object>) flowInfoResult.get("FLOW");
             Flow flow = new Flow(ifId, flowInfo, this.context);

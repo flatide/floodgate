@@ -26,6 +26,7 @@ package com.flatide.floodgate.agent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flatide.floodgate.ConfigurationManager;
+import com.flatide.floodgate.FloodgateConstants;
 import com.flatide.floodgate.agent.flow.Flow;
 import com.flatide.floodgate.agent.flow.FlowTag;
 import com.flatide.floodgate.agent.flow.stream.FGInputStream;
@@ -97,12 +98,12 @@ public class ChannelJob implements Callable<Map> {
         log.put("PARENT_ID", (String) this.context.get(Context.CONTEXT_KEY.CHANNEL_ID.toString()));
         log.put("FLOW_ID", this.target);
         log.put("START_TIME", startTime);
-        String historyTable = ConfigurationManager.shared().getString("channel.log.tableForFlow");
+        String historyTable = ConfigurationManager.shared().getString(FloodgateConstants.CHANNEL_LOG_TABLE_FOR_FLOW);
         LoggingManager.shared().insert(historyTable, "ID", log);
 
         Map<String, Object> result = new HashMap<>();
         try {
-            String flowInfoTable = (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForFlow");
+            String flowInfoTable = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW);
 
             Map flowMeta = MetaManager.shared().read( flowInfoTable, target);
 
@@ -112,7 +113,7 @@ public class ChannelJob implements Callable<Map> {
             Object spooling = flowInfo.get(FlowTag.SPOOLING.name());
             if( spooling != null && (boolean) spooling) {
                 // backup ChannelJob with flowId
-                String path = (String) ConfigurationManager.shared().getConfig().get("channel.spooling.folder");
+                String path = ConfigurationManager.shared().getString(FloodgateConstants.CHANNEL_SPOOLING_FOLDER);
                 Map<String, Object> contextMap = this.context.getMap();
 
                 Map<String, Object> newContext = new HashMap<>();
