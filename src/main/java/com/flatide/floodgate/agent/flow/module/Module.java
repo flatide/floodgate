@@ -71,13 +71,14 @@ public class Module {
             ConnectorBase connector;
 
             Object connectRef = this.sequences.get(FlowTag.CONNECT.name());
-            Map<String, Object> connInfo;
+            Map connInfo;
             if (connectRef == null) {
                 logger.info(context.getId() + " : No connect info for module " + this.id);
             } else {
                 if (connectRef instanceof String) {
                     String table = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE);
-                    connInfo = MetaManager.shared().read(table, (String) connectRef);
+                    Map connMeta = MetaManager.shared().read(table, (String) connectRef);
+                    connInfo = (Map) connMeta.get("DATA");
                 } else {
                     @SuppressWarnings("unchecked")
                     Map<String, Object> temp = (Map<String, Object>) connectRef;
