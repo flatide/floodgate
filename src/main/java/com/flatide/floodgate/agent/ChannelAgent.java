@@ -62,15 +62,17 @@ public class ChannelAgent {
 
         // API 정보 확인
         String apiTable = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API);
-        Map<String, Object> apiInfo = MetaManager.shared().read( apiTable, api);
+        Map apiMeta = MetaManager.shared().read( apiTable, api);
+        Map apiInfo = (Map) apiMeta.get("DATA");
 
         Map<String, Object> log = new HashMap<>();
 
         //Date startTime = new Date(System.currentTimeMillis());
         java.sql.Timestamp startTime = new java.sql.Timestamp(System.currentTimeMillis());
         log.put("ID", id.toString());
+        log.put("API_ID", api);
         log.put("START_TIME", startTime);
-        String historyTable = ConfigurationManager.shared().getString("channel.log.table");
+        String historyTable = ConfigurationManager.shared().getString("channel.log.tableForAPI");
         LoggingManager.shared().insert(historyTable, "ID",  log);
 
 
@@ -80,12 +82,12 @@ public class ChannelAgent {
                 "": ["IF_ID1", "IF_ID2"],
                 "CD0001": ["IF_ID3"] }
          */
-        Map<String, List<String>> targetMap = (Map<String, List<String>>)apiInfo.get("TARGET");
+        Map<String, List<String>> targetMap = (Map) apiInfo.get("TARGET");
 
         List<String> targetList = new ArrayList<>();
 
-        Map<String, String> params = (Map<String, String>) getContext(Context.CONTEXT_KEY.REQUEST_PARAMS);
-        String targets = params.get("targets");
+        Map params = (Map) getContext(Context.CONTEXT_KEY.REQUEST_PARAMS);
+        String targets = (String) params.get("targets");
         if( targets != null && !targets.isEmpty() ) {
             String[] split = targets.split(",");
             for( String t : split ) {
@@ -150,7 +152,12 @@ public class ChannelAgent {
                     //Map<String, Object> flowInfo = MetaManager.shared().get(flowInfoTable, target);
                     ChannelJob job = new ChannelJob(target, this.context, current);
 
-                    result.put(target, job.call());
+                    try {
+                        result.put(target, job.call());
+                    } catch(Exception e ) {
+                        e.printStackTrace();
+                        result.put(target, e.getMessage());
+                    }
                 }
             }
         } catch(Exception e) {

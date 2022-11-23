@@ -71,7 +71,7 @@ public class Flow {
         }
     }
 
-    public FGInputStream process(FGInputStream input) {
+    public FGInputStream process(FGInputStream input) throws Exception {
         this.context.setCurrent(input);
 
         this.context.setNext(this.context.getEntry());
@@ -88,6 +88,7 @@ public class Flow {
 
             } catch(Exception e) {
                 e.printStackTrace();
+                throw e;
             }
         }
 

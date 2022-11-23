@@ -29,6 +29,7 @@ import com.flatide.floodgate.ConfigurationManager;
 import com.flatide.floodgate.agent.flow.Flow;
 import com.flatide.floodgate.agent.flow.FlowTag;
 import com.flatide.floodgate.agent.flow.stream.FGInputStream;
+import com.flatide.floodgate.agent.logging.LoggingManager;
 import com.flatide.floodgate.agent.meta.MetaManager;
 import com.flatide.floodgate.agent.spool.SpoolingManager;
 
@@ -85,15 +86,28 @@ public class ChannelJob implements Callable<Map> {
 
     @Override
     public Map call() throws Exception {
-        String flowInfoTable = (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForFlow");
-        Map<String, Object> flowInfo = MetaManager.shared().read( flowInfoTable, target);
-        //Map<String, Object> flowInfo = (Map<String, Object>) flowInfoResult.get("FLOW");
+            // Unique ID 생성
+        UUID id = UUID.randomUUID();
+        String flowId = id.toString();
+
+        Map<String, Object> log = new HashMap<>();
+
+        java.sql.Timestamp startTime = new java.sql.Timestamp(System.currentTimeMillis());
+        log.put("ID", id.toString());
+        log.put("PARENT_ID", (String) this.context.get(Context.CONTEXT_KEY.CHANNEL_ID.toString()));
+        log.put("FLOW_ID", this.target);
+        log.put("START_TIME", startTime);
+        String historyTable = ConfigurationManager.shared().getString("channel.log.tableForFlow");
+        LoggingManager.shared().insert(historyTable, "ID", log);
+
         Map<String, Object> result = new HashMap<>();
         try {
-            // Unique ID 생성
-            UUID id = UUID.randomUUID();
-            String flowId = id.toString();
+            String flowInfoTable = (String) ConfigurationManager.shared().getConfig().get("meta.source.tableForFlow");
 
+            Map flowMeta = MetaManager.shared().read( flowInfoTable, target);
+
+            Map<String, Object> flowInfo = (Map) flowMeta.get("DATA");
+            //Map<String, Object> flowInfo = (Map<String, Object>) flowInfoResult.get("FLOW");
 
             Object spooling = flowInfo.get(FlowTag.SPOOLING.name());
             if( spooling != null && (boolean) spooling) {
@@ -117,16 +131,27 @@ public class ChannelJob implements Callable<Map> {
 
                 SpoolingManager.shared().addJob(flowId);
                 result.put("result", "spooled : " + flowId);
+                log.put("RESULT", "spooled");
             } else {
                 Flow flow = new Flow(flowId, flowInfo, this.context);
                 flow.process(current);
                 result.put("result", "success");
+                log.put("RESULT", "success");
             }
         } catch(Exception e) {
             e.printStackTrace();
             result.put("result", "fail");
             result.put("reason", e.getMessage());
+            log.put("RESULT", "fail");
         }
+
+        java.sql.Timestamp endTime = new java.sql.Timestamp(System.currentTimeMillis());
+
+        log.put("ID", id.toString());
+        log.put("END_TIME", endTime);
+        log.put("LOG", result.get("reason"));
+        LoggingManager.shared().update(historyTable, "ID", log);
+
         return result;
     }
 }
