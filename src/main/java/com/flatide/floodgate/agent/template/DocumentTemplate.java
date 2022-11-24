@@ -58,13 +58,13 @@ public class DocumentTemplate {
                 //Path path = Paths.get(name + ".template");
                 //List<String> lines = Files.readAllLines(path);
 
-                ClassPathResource resource = new ClassPathResourdce(name + ".template");
+                ClassPathResource resource = new ClassPathResource(name + ".template");
                 InputStreamReader isr = new InputStreamReader(resource.getInputStream(), "UTF-8");
                 BufferedReader br = new BufferedReader(isr);
 
                 List<String> lines = new ArrayList<>();
                 String line;
-                while ((line = br.readLine()) != null ) {
+                while ((line = br.readLine()) != null) {
                     lines.add(line);
                 }
 

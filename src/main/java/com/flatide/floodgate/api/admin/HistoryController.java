@@ -24,7 +24,6 @@
 
 package com.flatide.floodgate.api.admin;
 
-import com.flatide.floodgate.agent.logging.LoggingManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
