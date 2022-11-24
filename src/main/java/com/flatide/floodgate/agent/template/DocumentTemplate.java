@@ -29,10 +29,10 @@ import com.flatide.floodgate.agent.flow.rule.MappingRule;
 import com.flatide.floodgate.agent.flow.rule.MappingRuleItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -54,9 +54,20 @@ public class DocumentTemplate {
             documentTemplate = new DocumentTemplate();
 
             if( !name.isEmpty() ) {
-                Path path = Paths.get(name + ".template");
+                //not work for resources folder in executable jar
+                //Path path = Paths.get(name + ".template");
+                //List<String> lines = Files.readAllLines(path);
 
-                List<String> lines = Files.readAllLines(path);
+                ClassPathResource resource = new ClassPathResourdce(name + ".template");
+                InputStreamReader isr = new InputStreamReader(resource.getInputStream(), "UTF-8");
+                BufferedReader br = new BufferedReader(isr);
+
+                List<String> lines = new ArrayList<>();
+                String line;
+                while ((line = br.readLine()) != null ) {
+                    lines.add(line);
+                }
+
                 lines = preprocess(lines);
 
                 documentTemplate.root = new TemplatePart("root", lines);
