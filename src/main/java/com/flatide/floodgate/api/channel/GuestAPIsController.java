@@ -126,4 +126,41 @@ public class GuestAPIsController {
         agent.addContext(Context.CONTEXT_KEY.REQUEST_BODY, data);
         return agent.process(stream, resource);
     }
+
+    @PostMapping(path="/{guest}/{api}/{resource}")
+    public @ResponseBody Map postFlow(@RequestBody Map<String, Object> data,
+                                      @PathVariable String guest,
+                                      @PathVariable String api,
+                                      @PathVariable String resource,
+                                      @RequestParam Map<String, String> params) throws Exception {
+
+        MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
+        long fullused = mbean.getHeapMemoryUsage().getUsed();
+        long fullmax = mbean.getHeapMemoryUsage().getMax();
+        long fullfree = fullmax - fullused;
+
+        System.out.println(String.format("max: %d, used: %d, free %d", fullmax, fullused, fullfree));
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        Enumeration<String> headers = request.getHeaderNames();
+        while( headers.hasMoreElements() ) {
+            String header = headers.nextElement();
+            //if( "client_ip".equals(header) || "content-type".equals(header) || "content-length".equals(header) || "transfer-encoding".equals(header)) {
+                System.out.println(header + " : " + request.getHeader(header));
+            //}
+        }
+        System.out.println();
+
+        //holder.add(new byte[500000]);
+        //return new HashMap<String, String>();
+        //return "{item}";
+        FGInputStream current = new FGSharableInputCurrent( new JSONContainer(data, "HEADER", "ITEMS"));
+
+        ChannelAgent agent = new ChannelAgent();
+        agent.addContext(Context.CONTEXT_KEY.REQUEST_PARAMS, params);
+        agent.addContext(Context.CONTEXT_KEY.REQUEST_BODY, data);
+        return agent.process(current, "/" + guest + "/" + api + "/" + resource);
+    }
+
 }

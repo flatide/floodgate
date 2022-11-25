@@ -128,7 +128,9 @@ public class Module {
 
                     String next = (String) this.sequences.get(FlowTag.CALL.name());
                     context.setNext(next);
-                } catch (Exception e) { e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw e;
                 } finally {
                     connector.close();
                 }

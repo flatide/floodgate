@@ -180,6 +180,9 @@ public class ConnectorDB extends ConnectorBase {
                         if( key.startsWith(">")) {
                             Object value = processEmbedFunction(key.substring(1));
                             ps.setObject(i++, value);
+                        } else if( key.startsWith("{") {
+                            Object value = context.get(key.substring(1, key.length() - 1 ));
+                            ps.setObject(i++, value);
                         } else {
                             ps.setObject(i++, item.get(key));
                         }

@@ -50,6 +50,7 @@ public class MappingRuleItem {
     public RuleAction action = RuleAction.reference;
 
     public enum RuleAction {
+        system,
         reference,
         literal,
         function,
@@ -72,6 +73,10 @@ public class MappingRuleItem {
         char first = this.sourceName.charAt(0);
 
         switch(first) {
+            case '{':
+                //{CONTEXT.REQUEST_PARAMS.totalcount}
+                this.action = RuleAction.system;
+                break;
             case '>':
                 this.action = RuleAction.function;
                 this.sourceName = this.sourceName.substring(1);

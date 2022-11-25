@@ -73,6 +73,10 @@ public class MappingRule {
     public <T> String apply(MappingRuleItem item, T columnData) throws Exception {
         Object value = null;
         switch (item.getAction()) {
+            case system:
+                value = "?";
+                param.add(item.getSourceName());
+                break;
             case reference:
                 value = ((Map)columnData).get(item.getSourceName());
                 param.add(item.getSourceName());
@@ -162,7 +166,7 @@ public class MappingRule {
 
         processFuntionForTemplate으로 이름을 변경하면 좋을 것. 20201223
      */
-    String preprocessFunc(MappingRuleItem item) {
+    /*String preprocessFunc(MappingRuleItem item) {
         String func = item.getSourceName();
         Function function = Function.valueOf(func);
 
@@ -173,5 +177,5 @@ public class MappingRule {
             default:
                 return "?";
         }
-    }
+    }*/
 }
