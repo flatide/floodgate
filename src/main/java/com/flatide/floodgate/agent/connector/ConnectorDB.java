@@ -138,7 +138,7 @@ public class ConnectorDB extends ConnectorBase {
         this.connection.setAutoCommit(false);
 
         DatabaseMetaData meta = this.connection.getMetaData();
-        logger.info(meta.getDatabaseProductName() + " : " + meta.getDatabaseProductVersion());
+        logger.debug(meta.getDatabaseProductName() + " : " + meta.getDatabaseProductVersion());
     }
 
     /*@Override
@@ -167,7 +167,7 @@ public class ConnectorDB extends ConnectorBase {
             this.query = documentTemplate.makeHeader(context, mappingRule, temp);
             //this.query += documentTemplate.makeBody(this.output, mappingRule);
             this.param = mappingRule.getParam();
-            logger.info(this.query);
+            logger.debug(this.query);
         }
         //cur = System.currentTimeMillis();
         try (PreparedStatement ps = this.connection.prepareStatement(this.query)) {

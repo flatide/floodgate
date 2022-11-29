@@ -123,7 +123,7 @@ public final class MetaManager {
     }
 
     public void setMetaSource(FDataSource FGDataSource, boolean reset) throws Exception {
-        logger.info("Set MetaSource as " + FGDataSource.getName() + " with reset = " + reset);
+        logger.debug("Set MetaSource as " + FGDataSource.getName() + " with reset = " + reset);
         if( reset ) {
             if (this.cache != null) {
                 // TODO store cache to permanent storage

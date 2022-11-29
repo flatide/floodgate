@@ -88,7 +88,7 @@ public class FDataSourceFile extends FDataSourceDefault {
 
                 Matcher matcher = pattern.matcher(name);
                 if( matcher.matches()) {
-                    logger.info(name + " : " + matcher.matches());
+                    logger.debug(name + " : " + matcher.matches());
                 }
                 return matcher.matches();
             };

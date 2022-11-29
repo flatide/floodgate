@@ -67,7 +67,7 @@ public final class LoggingManager {
     }
 
     public void setDataSource(FDataSource FGDataSource, boolean reset) throws Exception {
-        logger.info("Set DataSource as " + FGDataSource.getName() + " with reset = " + reset);
+        logger.debug("Set DataSource as " + FGDataSource.getName() + " with reset = " + reset);
 
         this.tableKeyMap = new HashMap<>();
         this.dataSource = FGDataSource;
