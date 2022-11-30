@@ -221,7 +221,7 @@ public class ConnectorDB extends ConnectorBase {
                 throw e;
             } finally {
                 ps.close();
-                //System.out.println(String.format("Done : %ss", System.currentTimeMillis() - this.cur));
+                //System.out.println(String.format("Done : %s ms", System.currentTimeMillis() - this.cur));
             }
         }
 

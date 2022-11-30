@@ -116,7 +116,7 @@ public abstract class ConnectorBase implements Connector {
 
         afterCreate(mappingRule);
 
-        System.out.println(String.format("Done : %ss", System.currentTimeMillis() - cur));
+        System.out.println(String.format("Done : %s ms", System.currentTimeMillis() - cur));
 
         return sent;
     }

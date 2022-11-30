@@ -24,9 +24,13 @@
 
 package com.flatide.floodgate.agent.template;
 
+import com.flatide.floodgate.ConfigurationManager;
+import com.flatide.floodgate.FloodgateConstants;
 import com.flatide.floodgate.agent.Context;
 import com.flatide.floodgate.agent.flow.rule.MappingRule;
 import com.flatide.floodgate.agent.flow.rule.MappingRuleItem;
+import com.flatide.floodgate.agent.meta.MetaManager;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
@@ -48,31 +52,54 @@ public class DocumentTemplate {
     private DocumentTemplate() {
     }
 
-    public static DocumentTemplate get(String name, boolean cache) throws Exception {
-        DocumentTemplate documentTemplate = templateCache.get(name);
+    /*
+     * builtInTemplate : Pre-defined template located in scr/main/resources
+     */
+    public static DocumentTemplate get(String name, String builtInTemplate, boolean cache) throws Exception {
+        if (name == null) {
+            name = "";
+        }
+
+        DocumentTemplate documentTemplate = null;
+        if (cache) {
+            documentTemplate = templateCache.get(name);
+        }
+
         if( documentTemplate == null || cache == false) {
             documentTemplate = new DocumentTemplate();
 
+            List<String> lines = new ArrayList<>();
+
             if( !name.isEmpty() ) {
+                String table = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE);
+                Map templateInfo = MetaManager.shared().read(table, name);
+                Map templateData = (Map) templateInfo.get("DATA");
+                if( templateData != null ) {
+                    String read = (String) templateData.get("TEMPLATE");
+                    String[] split = read.split("\\R");
+                    for( String l : split ) {
+                        lines.add(l);
+                    }
+                }
+            } else {
                 //not work for resources folder in executable jar
-                //Path path = Paths.get(name + ".template");
+                //Path path = Paths.get(builtInTemplate + ".template");
                 //List<String> lines = Files.readAllLines(path);
 
-                ClassPathResource resource = new ClassPathResource(name + ".template");
+                ClassPathResource resource = new ClassPathResource(builtInTemplate + ".template");
                 InputStreamReader isr = new InputStreamReader(resource.getInputStream(), "UTF-8");
                 BufferedReader br = new BufferedReader(isr);
 
-                List<String> lines = new ArrayList<>();
                 String line;
                 while ((line = br.readLine()) != null) {
                     lines.add(line);
                 }
-
-                lines = preprocess(lines);
-
-                documentTemplate.root = new TemplatePart("root", lines);
-                //System.out.println(documentTemplate.root.print(0));
             }
+
+            lines = preprocess(lines);
+
+            documentTemplate.root = new TemplatePart("root", lines);
+            //System.out.println(documentTemplate.root.print(0));
 
             templateCache.put(name, documentTemplate);
         }

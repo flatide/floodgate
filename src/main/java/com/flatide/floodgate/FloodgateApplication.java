@@ -54,6 +54,7 @@ public class FloodgateApplication {
             MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_API));
             MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW));
             MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE));
+            MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE));
         } catch(Exception e) {
             e.printStackTrace();
         }

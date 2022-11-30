@@ -88,16 +88,17 @@ public class Module {
                 connector = ConnectorFactory.shared().getConnector(connInfo);
 
                 String templateName = (String) this.sequences.get(FlowTag.TEMPLATE.name());
-                if( templateName == null ) {
+                String builtInTemplate = "";
+                if( templateName == null || templateName.isEmpty()) {
                     String method = (String) connInfo.get(ConnectorTag.CONNECTOR.name());
                     if ("FILE".equals(method)) {
-                        templateName = "JSON";
+                        builtInTemplate = "JSON";
                     } else {
-                        templateName = method;
+                        builtInTemplate = method;
                     }
                 }
 
-                DocumentTemplate documentTemplate = DocumentTemplate.get(templateName, false);
+                DocumentTemplate documentTemplate = DocumentTemplate.get(templateName, builtInTemplate, false);
                 connector.setDocumentTemplate(documentTemplate);
 
                 context.add("CONNECT_INFO", connInfo);
