@@ -76,7 +76,7 @@ public class FDataSourceDB extends FDataSourceDefault {
     @Override
     public List<String> getAllKeys(String tableName, String keyColumn) {
         String query = "SELECT " + keyColumn + " FROM " + tableName;
-        logger.info(query);
+        logger.debug(query);
 
         ArrayList<String> result = new ArrayList<>();
         try ( PreparedStatement ps = this.connection.prepareStatement(query); ResultSet rs = ps.executeQuery() ){
@@ -101,7 +101,7 @@ public class FDataSourceDB extends FDataSourceDefault {
     @Override
     public Map<String, Object> read(String tableName, String keyColumn, String key) throws Exception {
         String query = "SELECT * FROM " + tableName + " WHERE " + keyColumn + " = ?";
-        logger.info(query);
+        logger.debug(query);
 
         try (PreparedStatement ps = this.connection.prepareStatement(query) ){
             ps.setString(1, key);
@@ -135,7 +135,7 @@ public class FDataSourceDB extends FDataSourceDefault {
         if( key != null && !key.isEmpty()) {
             query += " WHERE " + keyColumn + " like ?";
         }
-        logger.info(query);
+        logger.debug(query);
 
         List<Map<String, Object>> result = new ArrayList<>();
 
@@ -196,7 +196,7 @@ public class FDataSourceDB extends FDataSourceDefault {
         param.append(" ) ");
         query.append(param);
 
-        logger.info(query.toString());
+        logger.debug(query.toString());
 
         try (PreparedStatement ps = this.connection.prepareStatement(query.toString())) {
             i = 1;
@@ -256,7 +256,7 @@ public class FDataSourceDB extends FDataSourceDefault {
         }
         query.append(" WHERE ID = ? ");
 
-        logger.info(query.toString());
+        logger.debug(query.toString());
 
         try (PreparedStatement ps = this.connection.prepareStatement(query.toString())) {
             i = 1;
