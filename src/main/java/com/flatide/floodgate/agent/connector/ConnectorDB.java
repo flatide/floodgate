@@ -173,7 +173,7 @@ public class ConnectorDB extends ConnectorBase {
         try (PreparedStatement ps = this.connection.prepareStatement(this.query)) {
             try {
                 int count = 0, transfer = 0;
-                ps.setQueryTimeout(1);
+                int timeout = this.context.getIntegerDefault("SEQUENCE.TIMEOUT", 0);
                 for (Map item : itemList) {
                     int i = 1;
                     for (String key : this.param) {
@@ -191,13 +191,13 @@ public class ConnectorDB extends ConnectorBase {
                     ps.addBatch();
                     count++;
                     if( count >= batchSize ) {
+                        ps.setQueryTimeout(timeout);
                         cur = System.currentTimeMillis();
                         ps.executeBatch();
                         this.connection.commit();
                         transfer += count;
                         count = 0;
-                        System.out.println(System.currentTimeMillis() - this.cur);
-                        ps.setQueryTimeout(1);
+                        logger.debug(System.currentTimeMillis() - this.cur);
                     }
 
                     /*ps.executeUpdate();
@@ -207,11 +207,12 @@ public class ConnectorDB extends ConnectorBase {
                      */
                 }
                 if( count > 0 ) {
+                    ps.setQueryTimeout(timeout);
                     cur = System.currentTimeMillis();
                     ps.executeBatch();
                     this.connection.commit();
                     transfer += count;
-                    System.out.println(System.currentTimeMillis() - this.cur);
+                    logger.debug(System.currentTimeMillis() - this.cur);
                 }
                 //this.connection.commit();
                 this.sent = transfer;
@@ -219,9 +220,6 @@ public class ConnectorDB extends ConnectorBase {
                 //this.connection.rollback();
                 e.printStackTrace();
                 throw e;
-            } finally {
-                ps.close();
-                //System.out.println(String.format("Done : %s ms", System.currentTimeMillis() - this.cur));
             }
         }
 
@@ -278,7 +276,19 @@ public class ConnectorDB extends ConnectorBase {
     }
 
     @Override
-    public int delete() {
+    public int delete() throws Exception {
+        String table = (String) this.context.get("SEQUENCE.OUTPUT");
+
+        String truncateSQL = "DELETE FROM " + table;
+        try (PreparedStatement ps = this.connection.prepareStatement(truncateSQL)) {
+            int timeout = this.context.getIntegerDefault("SEQUENCE.TIMEOUT", 0);
+            ps.setQueryTimeout(timeout);
+            ps.execute();
+            this.connection.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
         return 0;
     }
 

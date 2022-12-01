@@ -108,23 +108,27 @@ public class Module {
 
                     String action = (String) this.sequences.get(FlowTag.ACTION.name());
 
-                    if (FlowTag.valueOf(action) == FlowTag.CREATE) {
-                        String ruleName = (String) this.sequences.get(FlowTag.RULE.name());
-                        MappingRule rule = context.getRules().get(ruleName);
+                    switch(FlowTag.valueOf(action)) {
+                        case CREATE:
+                            String ruleName = (String) this.sequences.get(FlowTag.RULE.name());
+                            MappingRule rule = context.getRules().get(ruleName);
 
-                        String dbType = (String) connInfo.get(ConnectorTag.JDBCTag.DBTYPE.toString());
-                        rule.setFunctionProcessor(connector.getFunctionProcessor(dbType));
+                            String dbType = (String) connInfo.get(ConnectorTag.JDBCTag.DBTYPE.toString());
+                            rule.setFunctionProcessor(connector.getFunctionProcessor(dbType));
 
-                        Payload payload = context.getCurrent().subscribe();
-                        //Payload payload = context.getPayload();
+                            Payload payload = context.getCurrent().subscribe();
+                            //Payload payload = context.getPayload();
 
-                        //logger.info(data.toString());
-                        connector.create(payload, rule);
+                            //logger.info(data.toString());
+                            connector.create(payload, rule);
 
-                        context.getCurrent().unsubscribe(payload);
-                            /*case DELETE:
-                            con.delete();
-                            break;*/
+                            context.getCurrent().unsubscribe(payload);
+                            break;
+                        case DELETE:
+                            connector.delete();
+                            break;
+                        default:
+                            break;
                     }
 
                     String next = (String) this.sequences.get(FlowTag.CALL.name());

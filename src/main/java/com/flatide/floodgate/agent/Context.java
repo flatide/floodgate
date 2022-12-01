@@ -104,6 +104,15 @@ public class Context {
         return null;
     }
 
+    public String getStringDefault(String key, String defaultValue) {
+        String ret = getString(key);
+        if( ret == null ) {
+            ret = defaultValue;
+        }
+
+        return ret;
+    }
+
     public Integer getInteger(String key) {
         Object value = get(key);
         if( value instanceof Integer) {
@@ -113,6 +122,15 @@ public class Context {
         }
 
         return null;
+    }
+
+    public Integer getIntegerDefault(String key, Integer defaultValue) {
+        Integer ret = getInteger(key);
+        if( ret == null ) {
+            ret = defaultValue;
+        }
+
+        return ret;
     }
 
     /*
