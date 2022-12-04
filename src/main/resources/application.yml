@@ -13,7 +13,7 @@ server:
   title: Floodate
   version: '@project.version@'
   servlet:
-    context-path: /floodgate
+    context-path: /
     multipart:
       max-file-size: -1
       max-request-size: 1
@@ -70,14 +70,6 @@ floodgate:
           Connection: backup/<DATE>.json
 
 
-      db:
-        type: DB
-    #datasource.db.url=jdbc:mysql://localhost:3306/test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-        driver: org.h2.Driver
-        url: jdbc:h2:~/floodgate
-        user: floodgate 
-        password: password 
-
       db_postgres:
         type: DB
           #datasource.db.url=jdbc:mysql://localhost:3306/test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
@@ -114,8 +106,8 @@ floodgate:
         tableForAPI: FLOODGATE_API
         tableForFlow: FLOODGATE_FLOW
         tableForDatasource: FLOODGATE_DATASOURCE
+        tableForTemplate: FLOODGATE_TEMPLATE
         tableForMetaHistory: FLOODGATE_META_HISTORY
-
 
 
     # For DB
@@ -148,24 +140,26 @@ floodgate:
 ---
 spring:
   config:
-    activte:
+    activate:
       on-profile: local
 
 server:
-  port: 8080
+  port: 8080 
 
 
 floodgate:
-    config:
-        channel:
-            log:
-                datasource: db
-                table: FLOODGATE_HISTORY
+  config:
+    channel:
+      log:
+        datasource: db
+        tableForAPI: FLOODGATE_API_HISTORY
+        tableForFlow: FLOODGATE_FLOW_HISTORY
 
     datasource:
-        db:
-            type: DB
-            driver: org.h2.Driver
-            url: jdbc:h2:./floodgate
-            user: floodgate
-            password: password
+     db:
+       type: DB
+       driver: org.h2.Driver
+# jdbc:h2:file:./floodgate
+       url: jdbc:h2:file:./floodgate
+       user: floodgate
+       password: password
