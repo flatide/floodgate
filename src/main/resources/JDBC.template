@@ -1,0 +1,11 @@
+#header
+INSERT INTO {SEQUENCE.OUTPUT} (
+    #column delimiter=", "
+    ?TARGET?
+    #end
+) VALUES (
+    #column delimiter=", " ignoreType='true'
+    $SOURCE$
+    #end
+)
+#end
