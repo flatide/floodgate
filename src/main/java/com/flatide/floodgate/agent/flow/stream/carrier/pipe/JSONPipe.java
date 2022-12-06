@@ -68,6 +68,11 @@ public class JSONPipe implements Carrier {
     public void flushToFile(String filename) throws Exception {
     }
 
+    @Override
+    public Object getSnapshot() throws Exception {
+        return null;
+    }
+
     public void reset() {
         this.remains = Integer.MAX_VALUE;
         this.status = 0;

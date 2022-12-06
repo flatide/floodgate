@@ -35,11 +35,13 @@ public enum FlowTag {
     // For Module
     BEFORE,
     AFTER,
+    RESULT,
     CALL,
 
     CONNECT,
     TEMPLATE,
-    OUTPUT,
+    //OUTPUT,
+    TARGET,
     BATCHSIZE,
     ACTION,
 

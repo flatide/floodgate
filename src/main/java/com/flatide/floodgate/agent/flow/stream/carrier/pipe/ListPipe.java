@@ -55,6 +55,11 @@ public class ListPipe<T> implements Carrier {
     public void flushToFile(String filename) throws Exception {
     }
 
+    @Override
+    public Object getSnapshot() throws Exception {
+        return null;
+    }
+
     public void reset() {
         this.current = 0;
         this.isFinished = false;

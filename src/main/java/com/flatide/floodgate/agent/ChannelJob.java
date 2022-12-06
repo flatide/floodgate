@@ -134,9 +134,14 @@ public class ChannelJob implements Callable<Map> {
                 result.put("result", "spooled : " + flowId);
                 log.put("RESULT", "spooled");
             } else {
-                Flow flow = new Flow(flowId, flowInfo, this.context);
-                flow.process(current);
-                result.put("result", "success");
+                Flow flow = new Flow(flowId, flowInfo, this.context, current);
+                FGInputStream returnStream = flowProcess();
+                if( returnStream != null ) {
+                    Carrier carrier = returnStream.getCarrier();
+                    result = (Map) carrier.getSnapshot();
+                } else {
+                    result.put("result", "success");
+                }
                 log.put("RESULT", "success");
             }
         } catch(Exception e) {

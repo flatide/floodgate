@@ -74,6 +74,11 @@ public class JSONContainer implements Carrier {
         }
     }
 
+    @Override
+    public Object getSnapshot() throws Exception {
+        return this.data;
+    }
+
     public void reset() {
         this.isFinished = false;
     }

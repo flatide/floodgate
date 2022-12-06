@@ -35,7 +35,7 @@ public interface Connector {
     void connect(Context context) throws Exception;
 
     long create(Payload payload, MappingRule mappingRule) throws Exception;
-    List<Map> read(Map rule) throws Exception;
+    List<Map> read(Mapping rule) throws Exception;
     int update(MappingRule mappingRule, Object data) throws Exception;
     int delete() throws Exception;
 

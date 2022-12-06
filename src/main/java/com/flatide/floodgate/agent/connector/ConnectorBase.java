@@ -73,14 +73,13 @@ public abstract class ConnectorBase implements Connector {
         this.user = this.context.getString("CONNECT_INFO." + ConnectorTag.USER.name());
         this.password = this.context.getString("CONNECT_INFO." + ConnectorTag.PASSWORD.name());
 
-        this.output = this.context.getString("SEQUENCE." + FlowTag.OUTPUT.name());
+        this.output = this.context.getString("SEQUENCE." + FlowTag.TARGET.name());
         this.batchSize = this.context.getInteger("SEQUENCE." + FlowTag.BATCHSIZE.name());
     }
 
     @Override
     //public final long createForStream(Payload payload, MappingRule mappingRule) throws Exception {
     public final long create(Payload payload, MappingRule mappingRule) throws Exception {
-        long cur = System.currentTimeMillis();
         beforeCreate(mappingRule);
 
         long sent = 0;
@@ -115,8 +114,6 @@ public abstract class ConnectorBase implements Connector {
         }
 
         afterCreate(mappingRule);
-
-        System.out.println(String.format("Done : %s ms", System.currentTimeMillis() - cur));
 
         return sent;
     }

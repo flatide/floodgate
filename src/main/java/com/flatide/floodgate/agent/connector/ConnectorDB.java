@@ -227,6 +227,49 @@ public class ConnectorDB extends ConnectorBase {
     }
 
     @Override
+    public List<Map> read(MappingRule rule) throws Exception {
+        String table = (String) this.context.get("SEQUENCE.TARGET");
+        String sql = (String) this.context.get("SEQUENCE.SQL");
+
+        String query = "";
+
+        if( sql != null ) {
+            query = sql;
+        } else {
+        }
+
+
+        List<Map> result = new ArrayList<>();
+        try(PreparedStatement ps = this.connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            ResultSetMetaData rsmeta = rs.getMetaData();
+
+            int count = rsmeta.getColumnCount();
+            while(rs.next() ) {
+                Map<String, Object> column = new LinkedHashMap<>();
+                for( int i = 1; i <= count; i++ ) {
+                    Object row = rs.getObject(i);
+
+                    if( row instanceof oracle.sql.TIMESTAMP) {
+                        // Jackson cannot (de)serialize oracle.sql.TIMESTAMP, converting it to java.sql Timestamp
+                        row = ((oracle.sql.TIMESTAMP)row).timestampValue();
+                    }
+                    // TODO process Clob and skip Blob
+                    column.put(rsmeta.getColumnLabel(i), row);
+                }
+
+                result.add(column);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        return result;
+    }
+
+    /*
+    @Override
     public List<Map> read(Map rule) throws Exception {
         StringBuilder cols = new StringBuilder();
 
@@ -269,6 +312,7 @@ public class ConnectorDB extends ConnectorBase {
 
         return result;
     }
+    */
 
     @Override
     public int update(MappingRule mappingRule, Object data) {
@@ -277,7 +321,7 @@ public class ConnectorDB extends ConnectorBase {
 
     @Override
     public int delete() throws Exception {
-        String table = (String) this.context.get("SEQUENCE.OUTPUT");
+        String table = (String) this.context.get("SEQUENCE.TARGET");
 
         String truncateSQL = "DELETE FROM " + table;
         try (PreparedStatement ps = this.connection.prepareStatement(truncateSQL)) {

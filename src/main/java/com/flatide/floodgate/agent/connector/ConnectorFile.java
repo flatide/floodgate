@@ -115,7 +115,7 @@ public class ConnectorFile extends ConnectorBase {
     }
 
     @Override
-    public List<Map> read(Map rule) {
+    public List<Map> read(MappingRule rule) {
         return null;
     }
 

@@ -33,12 +33,17 @@ import com.flatide.floodgate.agent.flow.Flow;
 import com.flatide.floodgate.agent.flow.FlowContext;
 import com.flatide.floodgate.agent.flow.FlowTag;
 import com.flatide.floodgate.agent.connector.ConnectorFactory;
+import com.flatide.floodgate.agent.flow.stream.FGInputStream;
+import com.flatide.floodgate.agent.flow.stream.FGSharableInputCurrent;
 import com.flatide.floodgate.agent.flow.stream.Payload;
+import com.flatide.floodgate.agent.flow.stream.carrier.container.JSONContainer;
 import com.flatide.floodgate.agent.flow.rule.MappingRule;
 import com.flatide.floodgate.agent.meta.MetaManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Module {
@@ -59,30 +64,28 @@ public class Module {
     /*
         FlowContext의 input에 대한 처리
     */
-    public void processBefore(FlowContext context) {
+    public void processBefore(FlowContext flowContext) {
         @SuppressWarnings("unchecked")
         Map<String, Object> before = (Map<String, Object>) this.sequences.get(FlowTag.BEFORE.name());
         if (before != null) {
         }
     }
 
-    public void process(FlowContext context) throws Exception {
+    public void process(FlowContext flowContext) throws Exception {
         if (this.sequences != null) {
             ConnectorBase connector;
 
             Object connectRef = this.sequences.get(FlowTag.CONNECT.name());
             Map connInfo;
             if (connectRef == null) {
-                logger.info(context.getId() + " : No connect info for module " + this.id);
+                logger.info(flowContext.getId() + " : No connect info for module " + this.id);
             } else {
                 if (connectRef instanceof String) {
                     String table = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE);
                     Map connMeta = MetaManager.shared().read(table, (String) connectRef);
                     connInfo = (Map) connMeta.get("DATA");
                 } else {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> temp = (Map<String, Object>) connectRef;
-                    connInfo = temp;
+                    connInfo = (Map) connectRef;
                 }
 
                 connector = ConnectorFactory.shared().getConnector(connInfo);
@@ -101,28 +104,45 @@ public class Module {
                 DocumentTemplate documentTemplate = DocumentTemplate.get(templateName, builtInTemplate, false);
                 connector.setDocumentTemplate(documentTemplate);
 
-                context.add("CONNECT_INFO", connInfo);
-                context.add("SEQUENCE", this.sequences);
+                flowContext.add("CONNECT_INFO", connInfo);
+                flowContext.add("SEQUENCE", this.sequences);
                 try {
-                    connector.connect(context);
+                    connector.connect(flowContext);
 
                     String action = (String) this.sequences.get(FlowTag.ACTION.name());
 
                     switch(FlowTag.valueOf(action)) {
-                        case CREATE:
+                        case READ:
+                        {
                             String ruleName = (String) this.sequences.get(FlowTag.RULE.name());
                             MappingRule rule = context.getRules().get(ruleName);
+                            List result = connector.read(rule);
+
+                            if("BYPASS".equals(sequences.get(FlowTag.RESULT.name()))){
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("ITEMS", result);
+                                FGInputStream stream = new FGSharableInputCurrent( new JSONContainer(data, "HEADER", "ITEMS") );
+                                flowContext.setCurrent(stream);
+                            } else {
+                                flowContext.setCurrent(null);
+                                break;
+                            }
+                        }
+                        case CREATE:
+                            String ruleName = (String) this.sequences.get(FlowTag.RULE.name());
+                            MappingRule rule = flowContext.getRules().get(ruleName);
 
                             String dbType = (String) connInfo.get(ConnectorTag.JDBCTag.DBTYPE.toString());
                             rule.setFunctionProcessor(connector.getFunctionProcessor(dbType));
 
-                            Payload payload = context.getCurrent().subscribe();
+                            Payload payload = flowContext.getCurrent().subscribe();
                             //Payload payload = context.getPayload();
 
                             //logger.info(data.toString());
                             connector.create(payload, rule);
 
-                            context.getCurrent().unsubscribe(payload);
+                            flowContext.getCurrent().unsubscribe(payload);
+                            flowContext.setCurrent(null);
                             break;
                         case DELETE:
                             connector.delete();
@@ -132,7 +152,7 @@ public class Module {
                     }
 
                     String next = (String) this.sequences.get(FlowTag.CALL.name());
-                    context.setNext(next);
+                    flowContext.setNext(next);
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw e;

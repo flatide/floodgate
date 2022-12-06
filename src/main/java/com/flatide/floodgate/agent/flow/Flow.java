@@ -36,13 +36,14 @@ import java.util.Map;
  */
 
 public class Flow {
-    private final FlowContext context;
+    private final FlowContext flowContext;
 
-    public Flow(String id, Map<String, Object> flowInfo, Context agentContext) {
-        this.context = new FlowContext(id, flowInfo);
-        this.context.setEntry((String) flowInfo.get(FlowTag.ENTRY.name()));
-        this.context.setDebug((Boolean) flowInfo.get(FlowTag.DEBUG.name()));
-        this.context.add("CONTEXT", agentContext);
+    public Flow(String id, Map<String, Object> flowInfo, Context agentContext, FGInputStream input) {
+        this.flowContext = new FlowContext(id, flowInfo);
+        this.flowContext.setCurrent(input);
+        this.flowCcontext.setEntry((String) flowInfo.get(FlowTag.ENTRY.name()));
+        this.flowContext.setDebug((Boolean) flowInfo.get(FlowTag.DEBUG.name()));
+        this.flowContext.add("CONTEXT", agentContext);
 
         // Module
         @SuppressWarnings("unchecked")
@@ -62,6 +63,7 @@ public class Flow {
         @SuppressWarnings("unchecked")
         Map<String, Object> mappingData = (Map<String, Object>) flowInfo.get(FlowTag.RULE.name());
         //HashMap<String, Object> mappingData = (HashMap) meta.get(FlowTag.RULE.name());
+        if( mappingData != null ) {
         for( Map.Entry<String, Object> entry : mappingData.entrySet() ) {
             MappingRule rule = new MappingRule();
             @SuppressWarnings("unchecked")
@@ -69,20 +71,20 @@ public class Flow {
             rule.addRule( temp );
             this.context.getRules().put( entry.getKey(), rule );
         }
+        }
     }
 
-    public FGInputStream process(FGInputStream input) throws Exception {
-        this.context.setCurrent(input);
+    public FGInputStream process() throws Exception {
 
-        this.context.setNext(this.context.getEntry());
-        while( this.context.hasNext()  ) {
-            Module module = this.context.next();
+        this.flowContext.setNext(this.flowContext.getEntry());
+        while( this.flowContext.hasNext()  ) {
+            Module module = this.flowContext.next();
 
             try {
 
-                module.processBefore(context);
-                module.process(context);
-                module.processAfter(context);
+                module.processBefore(flowContext);
+                module.process(flowContext);
+                module.processAfter(flowContext);
 
                 //TODO
 
@@ -92,6 +94,6 @@ public class Flow {
             }
         }
 
-        return this.context.getCurrent();
+        return this.flowContext.getCurrent();
     }
 }

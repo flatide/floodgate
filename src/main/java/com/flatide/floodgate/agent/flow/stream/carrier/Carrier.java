@@ -40,6 +40,7 @@ public interface Carrier {
     long getBufferReadSize();
 
     void flushToFile(String filename) throws Exception;
+    Object getSnapshot() throws Exception;
 
     void reset();
 
