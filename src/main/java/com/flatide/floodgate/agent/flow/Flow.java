@@ -69,7 +69,7 @@ public class Flow {
                 @SuppressWarnings("unchecked")
                 Map<String, String> temp = (Map<String, String>) entry.getValue();
                 rule.addRule( temp );
-                this.context.getRules().put( entry.getKey(), rule );
+                this.flowContext.getRules().put( entry.getKey(), rule );
             }
         }
     }
