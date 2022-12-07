@@ -58,8 +58,8 @@ class SpoolJob implements Callable<Map> {
         Map<String, Object> result = new HashMap<>();
         try {
 
-            Flow flow = new Flow(flowId, flowInfo, context);
-            flow.process(current);
+            Flow flow = new Flow(flowId, flowInfo, context, current);
+            flow.process();
             result.put("result", "success");
             System.out.println("Spooled Job " + flowId + " completed.");
 
