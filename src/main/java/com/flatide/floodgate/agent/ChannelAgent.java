@@ -36,7 +36,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ChannelAgent {
+    private static final Logger logger = LogManager.getLogger(ChannelAgent.class);
+
     private Context context;
 
     public ChannelAgent() {
@@ -54,11 +59,11 @@ public class ChannelAgent {
     public Object getContext(String key) { return this.context.get(key); }
 
     public Map<String, Object> process(FGInputStream current, String api) throws Exception {
-        addContext(Context.CONTEXT_KEY.API, api);
-
         // Unique ID 생성
         UUID id = UUID.randomUUID();
         addContext(Context.CONTEXT_KEY.CHANNEL_ID, id.toString());
+
+        addContext(Context.CONTEXT_KEY.API, api);
 
         // API 정보 확인
         String apiTable = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API);
@@ -68,7 +73,8 @@ public class ChannelAgent {
         Map<String, Object> log = new HashMap<>();
 
         //Date startTime = new Date(System.currentTimeMillis());
-        java.sql.Timestamp startTime = new java.sql.Timestamp(System.currentTimeMillis());
+        long start = System.currentTimeMillis();
+        java.sql.Timestamp startTime = new java.sql.Timestamp(start);
         log.put("ID", id.toString());
         log.put("API_ID", api);
         log.put("START_TIME", startTime);
@@ -104,7 +110,7 @@ public class ChannelAgent {
             //targetList = targetMap.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
         }
 
-        System.out.println(targetList);
+        logger.debug(targetList);
 
         // 페이로드 저장 true인 경우
         // 페이로드 저장은 호출시의 데이타에 한정한다
@@ -166,12 +172,14 @@ public class ChannelAgent {
         }
 
         //Date endTime = new Date(System.currentTimeMillis());
-        java.sql.Timestamp endTime = new java.sql.Timestamp(System.currentTimeMillis());
+        long end = System.currentTimeMillis();
+        java.sql.Timestamp endTime = new java.sql.Timestamp(end);
 
         log.put("ID", id.toString());
         log.put("END_TIME", endTime);
         log.put("LOG", logString);
         LoggingManager.shared().update(historyTable, "ID", log);
+        logger.info(String.format("%s (%s) is done : %s ms", id, api, end - start));
         return result;
     }
 }

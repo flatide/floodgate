@@ -30,6 +30,8 @@ import com.flatide.floodgate.FloodgateConstants;
 import com.flatide.floodgate.agent.flow.Flow;
 import com.flatide.floodgate.agent.flow.FlowTag;
 import com.flatide.floodgate.agent.flow.stream.FGInputStream;
+import com.flatide.floodgate.agent.flow.stream.Payload;
+import com.flatide.floodgate.agent.flow.stream.carrier.Carrier;
 import com.flatide.floodgate.agent.logging.LoggingManager;
 import com.flatide.floodgate.agent.meta.MetaManager;
 import com.flatide.floodgate.agent.spool.SpoolingManager;
@@ -135,9 +137,10 @@ public class ChannelJob implements Callable<Map> {
                 log.put("RESULT", "spooled");
             } else {
                 Flow flow = new Flow(flowId, flowInfo, this.context, current);
-                FGInputStream returnStream = flowProcess();
+                FGInputStream returnStream = flow.process();
                 if( returnStream != null ) {
                     Carrier carrier = returnStream.getCarrier();
+
                     result = (Map) carrier.getSnapshot();
                 } else {
                     result.put("result", "success");

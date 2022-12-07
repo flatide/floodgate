@@ -41,7 +41,7 @@ public class Flow {
     public Flow(String id, Map<String, Object> flowInfo, Context agentContext, FGInputStream input) {
         this.flowContext = new FlowContext(id, flowInfo);
         this.flowContext.setCurrent(input);
-        this.flowCcontext.setEntry((String) flowInfo.get(FlowTag.ENTRY.name()));
+        this.flowContext.setEntry((String) flowInfo.get(FlowTag.ENTRY.name()));
         this.flowContext.setDebug((Boolean) flowInfo.get(FlowTag.DEBUG.name()));
         this.flowContext.add("CONTEXT", agentContext);
 
@@ -50,7 +50,7 @@ public class Flow {
         Map<String, Map<String, Object>> mods = (Map<String, Map<String, Object>>) flowInfo.get(FlowTag.MODULE.name());
         for( Map.Entry<String, Map<String, Object>> entry : mods.entrySet() ) {
             Module module = new Module( this, entry.getKey(), entry.getValue());
-            this.context.getModules().put( entry.getKey(), module);
+            this.flowContext.getModules().put( entry.getKey(), module);
         }
 
         // Connect Info
@@ -64,13 +64,13 @@ public class Flow {
         Map<String, Object> mappingData = (Map<String, Object>) flowInfo.get(FlowTag.RULE.name());
         //HashMap<String, Object> mappingData = (HashMap) meta.get(FlowTag.RULE.name());
         if( mappingData != null ) {
-        for( Map.Entry<String, Object> entry : mappingData.entrySet() ) {
-            MappingRule rule = new MappingRule();
-            @SuppressWarnings("unchecked")
-            Map<String, String> temp = (Map<String, String>) entry.getValue();
-            rule.addRule( temp );
-            this.context.getRules().put( entry.getKey(), rule );
-        }
+            for( Map.Entry<String, Object> entry : mappingData.entrySet() ) {
+                MappingRule rule = new MappingRule();
+                @SuppressWarnings("unchecked")
+                Map<String, String> temp = (Map<String, String>) entry.getValue();
+                rule.addRule( temp );
+                this.context.getRules().put( entry.getKey(), rule );
+            }
         }
     }
 

@@ -111,7 +111,7 @@ public class GuestAPIsController {
     }*/
 
     @GetMapping(path="/{guest}/{api}/{resource}")
-    public @ResponseBody Map getFlow(@RequestBody Map<String, Object> data, @PathVariable String guest, @PathVariable String api, @PathVariable String resource, @RequestParam Map<String, String> params) throws Exception {
+    public @ResponseBody Map getFlow(@PathVariable String guest, @PathVariable String api, @PathVariable String resource, @RequestParam Map<String, String> params) throws Exception {
         MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
         long fullused = mbean.getHeapMemoryUsage().getUsed();
         long fullmax = mbean.getHeapMemoryUsage().getMax();
@@ -119,12 +119,15 @@ public class GuestAPIsController {
 
         System.out.println(String.format("max: %d, used: %d, free %d", fullmax, fullused, fullfree));
 
+        Map data = new HashMap<>();
+        data.put("ITEMS", new ArrayList<>());
+
         FGInputStream stream = new FGSharableInputCurrent( new JSONContainer(data, "HEADER", "ITEMS"));
 
         ChannelAgent agent = new ChannelAgent();
         agent.addContext(Context.CONTEXT_KEY.REQUEST_PARAMS, params);
         agent.addContext(Context.CONTEXT_KEY.REQUEST_BODY, data);
-        return agent.process(stream, resource);
+        return agent.process(stream, "/" + guest + "/" + api + "/" + resource);
     }
 
     @PostMapping(path="/{guest}/{api}/{resource}")

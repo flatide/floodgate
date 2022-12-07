@@ -115,18 +115,18 @@ public class Module {
                         case READ:
                         {
                             String ruleName = (String) this.sequences.get(FlowTag.RULE.name());
-                            MappingRule rule = context.getRules().get(ruleName);
+                            MappingRule rule = flowContext.getRules().get(ruleName);
                             List result = connector.read(rule);
 
-                            if("BYPASS".equals(sequences.get(FlowTag.RESULT.name()))){
+                            if("BYPASS".equals(sequences.get(FlowTag.RESULT.name()))) {
                                 Map<String, Object> data = new HashMap<>();
                                 data.put("ITEMS", result);
                                 FGInputStream stream = new FGSharableInputCurrent( new JSONContainer(data, "HEADER", "ITEMS") );
                                 flowContext.setCurrent(stream);
                             } else {
                                 flowContext.setCurrent(null);
-                                break;
                             }
+                            break;
                         }
                         case CREATE:
                             String ruleName = (String) this.sequences.get(FlowTag.RULE.name());

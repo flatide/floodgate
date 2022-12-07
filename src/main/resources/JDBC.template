@@ -1,5 +1,5 @@
 #header
-INSERT INTO {SEQUENCE.OUTPUT} (
+INSERT INTO {SEQUENCE.TARGET} (
     #column delimiter=", "
     ?TARGET?
     #end

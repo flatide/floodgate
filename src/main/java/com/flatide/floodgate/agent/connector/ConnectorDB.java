@@ -251,7 +251,7 @@ public class ConnectorDB extends ConnectorBase {
                     Object row = rs.getObject(i);
 
                     if( row instanceof oracle.sql.TIMESTAMP) {
-                        // Jackson cannot (de)serialize oracle.sql.TIMESTAMP, converting it to java.sql Timestamp
+                        // Jackson cannot (de)serialize oracle.sql.TIMESTAMP, converting it to java.sql.Timestamp
                         row = ((oracle.sql.TIMESTAMP)row).timestampValue();
                     }
                     // TODO process Clob and skip Blob

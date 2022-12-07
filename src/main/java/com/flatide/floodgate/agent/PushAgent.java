@@ -59,8 +59,8 @@ public class PushAgent extends Spoolable {
             String tableName = ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW);
             Map<String, Object> flowInfoResult = MetaManager.shared().read( tableName, ifId);
             Map<String, Object> flowInfo = (Map<String, Object>) flowInfoResult.get("FLOW");
-            Flow flow = new Flow(ifId, flowInfo, this.context);
-            flow.process(data);
+            Flow flow = new Flow(ifId, flowInfo, this.context, data);
+            flow.process();
         } catch(Exception e) {
             e.printStackTrace();
         }
