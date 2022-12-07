@@ -75,8 +75,12 @@ public class Flow {
     }
 
     public FGInputStream process() throws Exception {
-
-        this.flowContext.setNext(this.flowContext.getEntry());
+        String entry = this.flowContext.getString("CONTEXT.REQUEST_PARAMS.entry");
+        if( entry == null || entry.isEmpty() ) {
+            entry = this.flowContext.getEntry();
+        }
+        
+        this.flowContext.setNext(entry);
         while( this.flowContext.hasNext()  ) {
             Module module = this.flowContext.next();
 
