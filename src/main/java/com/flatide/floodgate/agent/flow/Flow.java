@@ -79,7 +79,7 @@ public class Flow {
         if( entry == null || entry.isEmpty() ) {
             entry = this.flowContext.getEntry();
         }
-        
+
         this.flowContext.setNext(entry);
         while( this.flowContext.hasNext()  ) {
             Module module = this.flowContext.next();

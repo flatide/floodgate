@@ -31,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Base64;
+
 import javax.annotation.PostConstruct;
 
 @SpringBootApplication
@@ -55,6 +57,22 @@ public class FloodgateApplication {
             MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW));
             MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE));
             MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE));
+
+            String db_url = (String) config.get("datasource.security.url");
+            String db_userid = (String) config.get("datasource.security.user");
+            String db_passwd = (String) config.get("datasource.security.password");
+            String key = (String) config.get("security.key");
+            String key_alias = (String) config.get("security.alias");
+
+            if(Security.getInstance().getKey() == null ) {
+                try {
+                    Security.getInstance().loadPasswordFromDB( db_url, db_userid, db_passwd);
+                    Security.getInstance().loadKeyFromByteArray(Base64.getDecoder().decode(key), key_alias);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
         } catch(Exception e) {
             e.printStackTrace();
         }
