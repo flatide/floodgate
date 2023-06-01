@@ -1,11 +1,11 @@
 #header
 INSERT INTO {SEQUENCE.TARGET} (
     #column delimiter=", "
-    ?TARGET?
+?TARGET?
     #end
 ) VALUES (
     #column delimiter=", " ignoreType='true'
-    $SOURCE$
+$SOURCE$
     #end
 )
 #end
