@@ -28,7 +28,7 @@ import com.flatide.floodgate.agent.meta.MetaManager;
 import com.flatide.floodgate.agent.meta.MetaTable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Hashmap;
+import java.util.HashMap;
 import java.util.Map;
 
 @CrossOrigin(origins = "*")
@@ -37,15 +37,15 @@ import java.util.Map;
 public class MetaController {
     @GetMapping(path="/meta")
     public @ResponseBody Map get(
-        @RequestParam String table, 
-        @RequestParm(required = false) String id) throws Exception {
+            @RequestParam String table, 
+            @RequestParam(required = false) String id) throws Exception {
         try {
             if (id == null) {
                 MetaTable metaTable = MetaManager.shared().getTable(table);
                 if (metaTable == null) {
                     return null;
                 }
-                reeturn metaTable.getRows();
+                return metaTable.getRows();
             } else {
                 return MetaManager.shared().read(table, id);
             }
@@ -57,14 +57,14 @@ public class MetaController {
 
     @PostMapping(path="/meta")
     public @ResponseBody Map post(
-        @RequestBody Map<String, Object> data,
-        @RequestParam String table,
-        @RequestParam String key) thrwos Exception {
+            @RequestBody Map<String, Object> data,
+            @RequestParam String table,
+            @RequestParam String key) throws Exception {
         try {
             MetaManager.shared().insert(table, key, data, true);
             
             Map<String, Object> result = new HashMap<>();
-            result.put("result", "OK");
+            result.put("result", "Ok");
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,14 +74,14 @@ public class MetaController {
 
     @PutMapping(path="/meta")
     public @ResponseBody Map put(
-        @RequestBody Map<String, Object> data,
-        @RequestParam String table,
-        @RequestParam String key) throws Exception {
+            @RequestBody Map<String, Object> data,
+            @RequestParam String table,
+            @RequestParam String key) throws Exception {
         try {
             MetaManager.shared().update(table, key, data, true);
 
             Map<String, Object> result = new HashMap<>();
-            result.put("result", "OK");
+            result.put("result", "Ok");
             return result;
         } catch (Exception e) {
             e.printStackTrace();

@@ -40,11 +40,11 @@ import java.util.Map;
 public class DatasourceController {
     @GetMapping(path="/datasource")
     public @ResponseBody List get(
-        @RequestParam(required = false) String id,
-        @RequestParam(required = false, defaultValue = "1") int from,
-        @RequestParam(required = false, defaultValue = "-1") int to) throws Exception {
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false, defaultValue = "1") int from,
+            @RequestParam(required = false, defaultValue = "-1") int to) throws Exception {
         try {
-            return MetaMaanager.shared().readList(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), id);
+            return MetaManager.shared().readList(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), id);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -55,7 +55,7 @@ public class DatasourceController {
     public @ResponseBody Map post(
         @RequestBody Map<String, Object> data ) throws Exception {
         try {
-            Map<Strig, Object> d = (Map) data.get("DATA");
+            Map<String, Object> d = (Map) data.get("DATA");
             for (Map.entry e : d.entrySet()) {
                 String key = (String) e.getKey();
                 if ("PASSWORD".equals(key)) {
@@ -72,8 +72,8 @@ public class DatasourceController {
             data.put("MODIFY_DATE", current);
             MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), "ID", data, true);
 
-            Map<String, Object> result = new HashMap();
-            result.put("resul", "OK");
+            Map<String, Object> result = new HashMap<>();
+            result.put("result", "Ok");
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,24 +83,22 @@ public class DatasourceController {
 
     @PutMapping(path="/datasource")
     public @ResponseBody Map put(
-        @REquestBody Map<String, Object> data) throws Exception {
+            @RequestBody Map<String, Object> data) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationoManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), (String) data.get("ID"));
-
-            long cur = System.currentTimeMillis();
-            Timestamp current = new Timestamp(cur);
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), (String) data.get("ID"));
             
-            data.remove("CREATE_DATE);
-            data.put("MODIFY_DATE", current);
-
             old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE));
 
             MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_META_HISTORY), "ID", old, true);
 
-            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), "ID", data, true);
+            long cur = System.currentTimeMillis();
+            Timestamp current = new Timestamp(cur);
+            data.remove("CREATE_DATE);
+            data.put("MODIFY_DATE", current);
+            MetaManager.shared().update(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), "ID", data, true);
 
-            Map<String, Object> result = new HashMap();
-            result.put("resul", "OK");
+            Map<String, Object> result = new HashMap<>();
+            result.put("result", "Ok");
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,9 +108,9 @@ public class DatasourceController {
 
     @DeleteMapping(path="/datasource")
     public @ResponseBody Map delete(
-        @RequestParam(required = true) String id) throws Exception {
+            @RequestParam(required = true) String id) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationoManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), (String) data.get("ID"));
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), (String) data.get("ID"));
             
 
             old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE));
@@ -121,8 +119,8 @@ public class DatasourceController {
 
             MetaManager.shared().delete(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), id, true);
             
-            Map<String, Object> result = new HashMap();
-            result.put("resul", "OK");
+            Map<String, Object> result = new HashMap<>();
+            result.put("result", "Ok");
             return result;
         } catch (Exception e) {
             e.printStackTrace();

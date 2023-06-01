@@ -37,11 +37,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path="/api")
 public class AutoController extends ApiBasicController {
-    @GetMapping(path="/{api}/{target})
+    @GetMapping(path="/{api}/{target}")
     public @ResponseBody Map get(
-        @PathVariable String api,
-        @PathVariable Map<String, String> paths,
-        @RequestParam Map<String, String> params) throws Exception {
+            @PathVariable String api,
+            @PathVariable Map<String, String> paths,
+            @RequestParam Map<String, String> params) throws Exception {
         super.init();
         ChannelAgent agent = getAgent();
 
@@ -53,17 +53,17 @@ public class AutoController extends ApiBasicController {
 
     @PostMapping(path="/{api}/{target}")
     public @ResponseBody Map postFlow(
-        @RequestBody Map<String, Object> data,
-        @PathVariable String api,
-        @PathVariable Map<String, String> paths,
-        @RequestParam Map<String, String> params) throws Exception {
+            @RequestBody Map<String, Object> data,
+            @PathVariable String api,
+            @PathVariable Map<String, String> paths,
+            @RequestParam Map<String, String> params) throws Exception {
         super.init();
         ChannelAgent agent = getAgent();
 
         FGInputStream current = new FGSharableInputStream(new JSONContainer(data, "HEADER", "ITEMS"));
 
         agent.addContext(Context.CONTEXT_KEY.REQUEST_PATH_VARIABLES, paths);
-        agent.addContext(Context.CONTEXT_KEY.REQUET_PARAMS, params);
+        agent.addContext(Context.CONTEXT_KEY.REQUEST_PARAMS, params);
         agent.addContext(Context.CONTEXT_KEY.REQUEST_BODY, data);
 
         return agent.process(current, "/" + api);

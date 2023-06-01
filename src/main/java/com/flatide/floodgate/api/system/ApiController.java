@@ -40,11 +40,11 @@ import java.util.Map;
 public class ApiController {
     @GetMapping(path="/api")
     public @ResponseBody List get(
-        @RequestParam(required = false) String id,
-        @RequestParam(required = false, defaultValue = "1") int from,
-        @RequestParam(required = false, defaultValue = "-1") int to) throws Exception {
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false, defaultValue = "1") int from,
+            @RequestParam(required = false, defaultValue = "-1") int to) throws Exception {
         try {
-            return MetaMaanager.shared().readList(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), id);
+            return MetaManager.shared().readList(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), id);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -53,7 +53,7 @@ public class ApiController {
 
     @PostMapping(path="/api")
     public @ResponseBody Map post(
-        @RequestBody Map<String, Object> data ) throws Exception {
+        @RequestBody Map<String, Object> data) throws Exception {
         try {
             long cur = System.currentTimeMillis();
             Timestamp current = new Timestamp(cur);
@@ -62,8 +62,8 @@ public class ApiController {
             data.put("MODIFY_DATE", current);
             MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), "ID", data, true);
 
-            Map<String, Object> result = new HashMap();
-            result.put("resul", "OK");
+            Map<String, Object> result = new HashMap<>();
+            result.put("result", "Ok");
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,24 +73,24 @@ public class ApiController {
 
     @PutMapping(path="/api")
     public @ResponseBody Map put(
-        @REquestBody Map<String, Object> data) throws Exception {
+        @RequestBody Map<String, Object> data) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationoManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), (String) data.get("ID"));
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), (String) data.get("ID"));
 
             long cur = System.currentTimeMillis();
             Timestamp current = new Timestamp(cur);
             
-            data.remove("CREATE_DATE);
+            data.remove("CREATE_DATE");
             data.put("MODIFY_DATE", current);
 
             old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API));
 
             MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_META_HISTORY), "ID", old, true);
 
-            MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), "ID", data, true);
+            MetaManager.shared().update(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), "ID", data, true);
 
-            Map<String, Object> result = new HashMap();
-            result.put("resul", "OK");
+            Map<String, Object> result = new HashMap<>();
+            result.put("resul", "Ok");
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,9 +100,9 @@ public class ApiController {
 
     @DeleteMapping(path="/api")
     public @ResponseBody Map delete(
-        @RequestParam(required = true) String id) throws Exception {
+            @RequestParam(required = true) String id) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationoManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), (String) data.get("ID"));
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), (String) data.get("ID"));
             
 
             old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API));
@@ -111,8 +111,8 @@ public class ApiController {
 
             MetaManager.shared().delete(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), id, true);
             
-            Map<String, Object> result = new HashMap();
-            result.put("resul", "OK");
+            Map<String, Object> result = new HashMap<>();
+            result.put("resul", "Ok");
             return result;
         } catch (Exception e) {
             e.printStackTrace();

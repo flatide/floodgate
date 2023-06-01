@@ -42,9 +42,9 @@ import org.springframework.web.bind.annotation.*;
 public class InstantInterfacingController extends ApiBasicController {
     @GetMapping(path="/instant/{target}")
     public @ResponseBody Map get(
-        @PathVariable String api,
-        @PathVariable Map<String, String> paths,
-        @RequestParam Map<String, String> params) throws Exception {
+            @PathVariable String api,
+            @PathVariable Map<String, String> paths,
+            @RequestParam Map<String, String> params) throws Exception {
         super.init();
         ChannelAgent agent = getAgent();
 
@@ -56,11 +56,11 @@ public class InstantInterfacingController extends ApiBasicController {
 
     @PostMapping(path="/instant/{api1}/{target}")
     public @ResponseBody Map postFlow1(
-        @RequestBody Map<String, Object> body,
-        @RequestParam String src_trg,
-        @PathVariable String api1,
-        @PathVariable Map<String, String> paths,
-        @RequestParam Map<String, String> params) throws Exception {
+            @RequestBody Map<String, Object> body,
+            @RequestParam String src_trg,
+            @PathVariable String api1,
+            @PathVariable Map<String, String> paths,
+            @RequestParam Map<String, String> params) throws Exception {
         super.init();
 
         return postProcess(body, src_trg, api1, params, paths);
@@ -68,12 +68,12 @@ public class InstantInterfacingController extends ApiBasicController {
 
     @PostMapping(path="/instant/{api1}/{api2}/{target}")
     public @ResponseBody Map postFlow2(
-        @RequestBody Map<String, Object> body,
-        @RequestParam String src_trg,
-        @PathVariable String api1,
-        @PathVariable String api2,
-        @PathVariable Map<String, String> paths,
-        @RequestParam Map<String, String> params) throws Exception {
+            @RequestBody Map<String, Object> body,
+            @RequestParam String src_trg,
+            @PathVariable String api1,
+            @PathVariable String api2,
+            @PathVariable Map<String, String> paths,
+            @RequestParam Map<String, String> params) throws Exception {
         super.init();
 
         return postProcess(body, src_trg, api1 + "/" + api2, params, paths);
@@ -82,13 +82,13 @@ public class InstantInterfacingController extends ApiBasicController {
 
     @PostMapping(path="/instant/{api1}/{api2}/{api3}/{target}")
     public @ResponseBody Map postFlow3(
-        @RequestBody Map<String, Object> body,
-        @RequestParam String src_trg,
-        @PathVariable String api1,
-        @PathVariable String api2,
-        @PathVariable String api3,
-        @PathVariable Map<String, String> paths,
-        @RequestParam Map<String, String> params) throws Exception {
+            @RequestBody Map<String, Object> body,
+            @RequestParam String src_trg,
+            @PathVariable String api1,
+            @PathVariable String api2,
+            @PathVariable String api3,
+            @PathVariable Map<String, String> paths,
+            @RequestParam Map<String, String> params) throws Exception {
         super.init();
 
         return postProcess(body, src_trg, api1 + "/" + api2 + "/" + api3, params, paths);

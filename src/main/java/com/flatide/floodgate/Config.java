@@ -22,15 +22,19 @@
  * SOFTWARE.
  */
 
- package com.flatide.floodgate;
+package com.flatide.floodgate;
 
- import org.springframework.boot.context.properties.ConfigurationProperties;
- import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
- import com.flatide.floodgate.ConfigBase;
+import com.flatide.floodgate.ConfigBase;
 
- @Component
- @ConfiguraitonProperties(prefix="floodgate")
- public class Config extends ConfigBase {
- }
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Component
+@ConfigurationProperties(prefix="floodgate")
+public class Config extends ConfigBase {
+}
  

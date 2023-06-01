@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
- package com.flatide.floodgate;
+package com.flatide.floodgate;
 
 import com.flatide.floodgate.ConfigBase;
 import com.flatide.floodgate.ConfigurationManager;
@@ -36,7 +36,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.annotation.PostConstruct;
 
-@SpringBootApplicaiton
+@SpringBootApplication
 public class FloodgateApplication {
     @Autowired
     private ConfigBase config;
@@ -52,8 +52,8 @@ public class FloodgateApplication {
             String key = ConfigurationManager.shared().getString("security.key");
             String key_alias = ConfigurationManager.shared().getString("security.alias");
 
-            SecurityProvider provider = new SecurityProvider();
-            FloodgateSecurity.shared().setSecurityProvider(provider);
+            //SecurityProvider provider = new SecurityProvider();
+            //FloodgateSecurity.shared().setSecurityProvider(provider);
 
             Floodgate.init();
         } catch(Exception e) {
@@ -61,7 +61,7 @@ public class FloodgateApplication {
         }
     }
 
-    public static void main(String[] argv) {
+    public static void main(String[] args) {
         try {
             SpringApplication.run(FloodgateApplication.class, args);
         }catch(Exception e) {
@@ -69,6 +69,3 @@ public class FloodgateApplication {
         }
     }
 }
-
-            
-            

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.flatide.floodgate;
+package com.flatide.floodgate.api.admin;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +33,7 @@ import com.flatide.floodgate.agent.flow.FlowMockup;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashmap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +44,11 @@ import java.util.regex.Pattern;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "/admin")
-public class QueryContoller {
+public class QueryController {
     @PostMapping(path = "/query")
     public @ResponseBody Map query(
-        @RequestBody Map body,
-        @RequestParam String src_trg) throws Exception {
+            @RequestBody Map body,
+            @RequestParam String src_trg) throws Exception {
         Map<String, Object> result = new LinkedHashMap<>();
 
         Map execInfo = (Map) body.get("EXEC_INFO");
@@ -77,7 +77,7 @@ public class QueryContoller {
             try {
                 for (Map row : mappingInfoList) {
                     String targetColumn = (String) row.get("COL_ID");
-                    String sourceColukn = (String) row.get("MAP_SRC_COL_ID");
+                    String sourceColumn = (String) row.get("MAP_SRC_COL_ID");
                     String logic = (String) row.get("MAP_SRC_COL_LOGIC");
 
                     if (targetColumn == null || targetColumn.isEmpty()) {
@@ -85,12 +85,12 @@ public class QueryContoller {
                     }
 
                     if (sourceColumn == null || sourceColumn.isEmpty()) {
-                        if (logi null || logic.isEmpty()) {
+                        if (logic == null || logic.isEmpty()) {
                             sourceColumn = targetColumn;
                         }
                     }
 
-                    if (sourceColumn !=  null && !sourceColumn.isEmpty()) {
+                    if (sourceColumn != null && !sourceColumn.isEmpty()) {
                         sourceSet.add(sourceColumn);
                     }
 
@@ -116,7 +116,7 @@ public class QueryContoller {
 
                 query = "SELECT " + query + " FROM " + table;
 
-                String conditino = (String) execInfo.get("EXTRACT_CONDITINO");
+                String condition = (String) execInfo.get("EXTRACT_CONDITION");
                 if (condition != null && !condition.isEmpty()) {
                     query += " WHERE " + condition;
                 }
@@ -152,11 +152,11 @@ public class QueryContoller {
 
         Map<String, Object> rule = new HashMap<>();
 
-        Map<String, Object> mapping = new LinkedHashMap<>();
+        Map<String, String> mapping = new LinkedHashMap<>();
 
         try {
             // Item needed to process template
-            Map<String, Object> item = new LInkedHashMap<>();
+            Map<String, Object> item = new LinkedHashMap<>();
             for (Map row : mappingInfoList) {
                 String targetColumn = (String) row.get("COL_ID");
                 String sourceColumn = (String) row.get("MAP_SRC_COL_ID");
@@ -167,7 +167,7 @@ public class QueryContoller {
                 }
 
                 if (logic != null && !logic.isEmpty()) {
-                    if (sourceColumn == null || sourceColumn.isEmtpy()) {
+                    if (sourceColumn == null || sourceColumn.isEmpty()) {
                     } else {
                         item.put(sourceColumn, "");
                     }

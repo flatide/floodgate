@@ -27,7 +27,7 @@ package com.flatide.floodgate.api.system;
 import com.flatide.floodgate.agent.meta.*;
 import org.srpingframework.web.bind.annotation.*;
 
-import jafva.util.Map;
+import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -35,10 +35,10 @@ import jafva.util.Map;
 public class MetaSourceController {
     @GetMapping(path="/metasource")
     public @ReponseBody Map get(
-        @RequestParam(required = false) String source,
-        @RequestParam(required = false, defaultValue = "false") Boolean reset) throws Exception {
+            @RequestParam(required = false) String source,
+            @RequestParam(required = false, defaultValue = "false") Boolean reset) throws Exception {
         try {
-            if (source == null || source.isEmtpy()) {
+            if (source == null || source.isEmpty()) {
                 return MetaManager.shared().getInfo();
             } else {
                 MetaManager.shared().changeSource(source, reset);

@@ -31,11 +31,11 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "/admin")
-public class FlowGeneartorController {
+public class FlowGeneratorController {
     @PostMapping(path = "/flowgenerator")
     public @ResponseBody Map generate(
-        @RequestBody Map body,
-        @RequestParam String src_trg) throws Exception {
+            @RequestBody Map body,
+            @RequestParam String src_trg) throws Exception {
         FlowGenerator flowGenerator = new FlowGenerator();
         return flowGenerator.generate(body, src_trg);
     }

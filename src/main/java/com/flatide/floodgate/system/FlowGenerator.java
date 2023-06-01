@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.flatide.floodgate;
+package com.flatide.floodgate.system;
 
 import java.sql.Timestamp;
 import java.util.LinkedHashMap;
@@ -30,10 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 public class FlowGenerator {
-    public Map generate(Map body, String src_trg) trhows Exception {
+    public Map generate(
+            Map body, String src_trg) throws Exception {
         Map<String, Object> result = new LinkedHashMap<>();
    
-        map execInfo = (Map) body.get("EXEC_INFO");
+        Map execInfo = (Map) body.get("EXEC_INFO");
    
         List<Map> mappingInfoList = (List) body.get("MAPPING_INFO");
 
@@ -61,7 +62,7 @@ public class FlowGenerator {
    
             if( table == null || table.isEmpty()) {
                 result.put("success", false);
-                reuslt.put("error", "TABLE is required.");
+                result.put("error", "TABLE is required.");
                 return result;
             }
    
@@ -112,6 +113,12 @@ public class FlowGenerator {
    
             if (db_type == null || db_type.isEmpty()) {
                 result.put("success", false);
+                result.put("error", prefix + "_DB_TYPE is required.");
+                return result;
+            }
+
+            if (table == null || table.isEmpty()) {
+                result.put("success", false);
                 result.put("error", prefix + "_TABLE is required.");
                 return result;
             }
@@ -147,7 +154,7 @@ public class FlowGenerator {
         }
    
         Map<String, Object> rule = new LinkedHashMap<>();
-        Map<String, Object> mapping = new LinkedHashMap<>();
+        Map<String, String> mapping = new LinkedHashMap<>();
 
         try {
             // Item needed to process template
@@ -214,7 +221,7 @@ public class FlowGenerator {
         // result.put("QUERY_PARAM", query_param);
 
         //result.put("META", data);
-        result result;
+        return result;
     }
 
     public String makeURL(String dbType, String ipList, String port, String sid) {
@@ -232,7 +239,7 @@ public class FlowGenerator {
                     }
                     return "jdbc:oracle:thin:@" + ipports[0].trim() + ":" + sid.trim();
                 } else {
-                    String url = "jdbc.oracle:thin:@(DESCRIPTION=(FAILOVER=ON)(LOAD_BALANCE=OFF)(ADDRESS_LIST=";
+                    String url = "jdbc:oracle:thin:@(DESCRIPTION=(FAILOVER=ON)(LOAD_BALANCE=OFF)(ADDRESS_LIST=";
                     for (int i = 0; i < ipports.length; i++) {
                         String[] ip_port = ipports[i].split(":");
                         url += "(ADDRESS=(PROTOCOL=TCP)(HOST=" + ip_port[0] + ")(PORT=" + ip_port[1] + "))";
@@ -245,11 +252,11 @@ public class FlowGenerator {
             case "TIBERO": {
                 if (ipports.length == 1) {
                     if (sid.startsWith("/")) { // for ServiceName
-                        return "jdbc:oracle:thin:@" + ipports[0].trim() + sid.trim();
+                        return "jdbc:tibero:thin:@" + ipports[0].trim() + sid.trim();
                     }
-                    return "jdbc:oracle:thin:@" + ipports[0].trim() + ":" + sid.trim();
+                    return "jdbc:tibero:thin:@" + ipports[0].trim() + ":" + sid.trim();
                 } else {
-                    String url = "jdbc.oracle:thin:@(DESCRIPTION=(FAILOVER=ON)(LOAD_BALANCE=OFF)(ADDRESS_LIST=";
+                    String url = "jdbc:tibero:thin:@(DESCRIPTION=(FAILOVER=ON)(LOAD_BALANCE=OFF)(ADDRESS_LIST=";
                     for (int i = 0; i < ipports.length; i++) {
                         String[] ip_port = ipports[i].split(":");
                         url += "(ADDRESS=(PROTOCOL=TCP)(HOST=" + ip_port[0] + ")(PORT=" + ip_port[1] + "))";
@@ -261,7 +268,7 @@ public class FlowGenerator {
             }
             case "POSTGRESQL":
                 return "jdbc:postgresql://" + ipports[0] + "/" + sid;
-            case "GREENPLUN":
+            case "GREENPLUM":
                 return "jdbc:postgresql://" + ipports[0] + "/" + sid;
             case "MSSQL":
                 return "jdbc:sqlserver://" + ipports[0] + ";databaseName=" + sid;
@@ -272,7 +279,7 @@ public class FlowGenerator {
             case "MARIADB":
                 return "jdbc:mysql://" + ipports[0] + "/" + sid + "?characterEncoding=UTF-8&useConfigs=maxPerformance";
             case "DB2":
-                return "jdbc:db2:/" + ipports[0] + "/" + sid;
+                return "jdbc:db2://" + ipports[0] + "/" + sid;
             default:
                 return "";
         }
