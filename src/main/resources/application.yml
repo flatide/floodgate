@@ -3,21 +3,29 @@ spring:
     active: '@spring.profiles.active@'
   h2:
     console:
-      enabled: true
+      enabled: false 
       path: /h2-console
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 application:
   version: 'V@project.version@'
 
 server:
   title: Floodate
-  version: '@project.version@'
+  version: '@project.version@-@spring.profiles.active@'
   servlet:
     context-path: /
-    multipart:
-      max-file-size: -1
-      max-request-size: 1
   shutdown: graceful
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+  tomcat:
+    max-http-form-post-size: 100MB
 
 management:
   endpoint:
@@ -142,6 +150,10 @@ spring:
   config:
     activate:
       on-profile: local
+  datasource:
+    url:
+    username:
+    poassword:
 
 server:
   port: 8080 
@@ -155,8 +167,7 @@ floodgate:
     channel:
       log:
         datasource: db
-        tableForAPI: FLOODGATE_API_HISTORY
-        tableForFlow: FLOODGATE_FLOW_HISTORY
+        table: FLOODGATE_HISTORY
 
     datasource:
      db:

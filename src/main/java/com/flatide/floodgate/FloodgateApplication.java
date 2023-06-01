@@ -22,68 +22,53 @@
  * SOFTWARE.
  */
 
-package com.flatide.floodgate;
+ package com.flatide.floodgate;
 
-import com.flatide.floodgate.agent.Config;
-import com.flatide.floodgate.agent.logging.LoggingManager;
-import com.flatide.floodgate.agent.meta.*;
+import com.flatide.floodgate.ConfigBase;
+import com.flatide.floodgate.ConfigurationManager;
+import com.flatide.floodgate.Floodgate;
+import com.flatide.floodgate.system.security.FloodgateSecurity;
+import com.flatide.floodgate.system.security.SecurityProvider;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Base64;
-
 import javax.annotation.PostConstruct;
 
-@SpringBootApplication
+@SpringBootApplicaiton
 public class FloodgateApplication {
     @Autowired
-    private Config config;
+    private ConfigBase config;
 
     @PostConstruct
     public void init() {
         try {
-            System.out.println(CAEnv.getInstance().getAddress());
-
             ConfigurationManager.shared().setConfig(config);
 
-            String metaDatasource = (String) config.get("channel.meta.datasource");
-            MetaManager.shared().changeSource(metaDatasource, false);
+            String db_url = ConfigurationManager.shared().getString("datasource.security.url");
+            String db_userid = ConfigurationManager.shared().getString("datasource.security.user");
+            String db_passwd = ConfigurationManager.shared().getString("datasource.security.password");
+            String key = ConfigurationManager.shared().getString("security.key");
+            String key_alias = ConfigurationManager.shared().getString("security.alias");
 
-            String logDatasource = (String) config.get("channel.log.datasource");
-            LoggingManager.shared().changeSource(logDatasource, false);
+            SecurityProvider provider = new SecurityProvider();
+            FloodgateSecurity.shared().setSecurityProvider(provider);
 
-            MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_API));
-            MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW));
-            MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE));
-            MetaManager.shared().load((String) config.get(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE));
-
-            String db_url = (String) config.get("datasource.security.url");
-            String db_userid = (String) config.get("datasource.security.user");
-            String db_passwd = (String) config.get("datasource.security.password");
-            String key = (String) config.get("security.key");
-            String key_alias = (String) config.get("security.alias");
-
-            if(Security.getInstance().getKey() == null ) {
-                try {
-                    Security.getInstance().loadPasswordFromDB( db_url, db_userid, db_passwd);
-                    Security.getInstance().loadKeyFromByteArray(Base64.getDecoder().decode(key), key_alias);
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
+            Floodgate.init();
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] argv) {
         try {
             SpringApplication.run(FloodgateApplication.class, args);
         }catch(Exception e) {
             e.printStackTrace();
         }
     }
-
 }
+
+            
+            

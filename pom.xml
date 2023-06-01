@@ -68,7 +68,6 @@
             </activation>
             <properties>
                 <spring.profiles.active>local</spring.profiles.active>
-                <spring.profiles.version>1.0.0</spring.profiles.version>
             </properties>
         </profile>
     </profiles>
