@@ -79,7 +79,7 @@ public class FlowController {
 
             long cur = System.currentTimeMillis();
             Timestamp current = new Timestamp(cur);
-            data.remove("CREATE_DATE);
+            data.remove("CREATE_DATE");
             data.put("MODIFY_DATE", current);
 
             old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_FLOW));

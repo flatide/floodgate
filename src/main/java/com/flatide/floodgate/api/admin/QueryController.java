@@ -140,7 +140,7 @@ public class QueryController {
 
         connect.put("CONNECTOR", "JDBC");
         connect.put("DBTYPE", db_type);
-        insert.put("CONNECDT", connect);
+        insert.put("CONNECT", connect);
 
         insert.put("TEMPLATE", "QUERY_GENERATE");
         insert.put("TARGET", table);

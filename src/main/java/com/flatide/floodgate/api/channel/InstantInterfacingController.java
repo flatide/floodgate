@@ -64,7 +64,7 @@ public class InstantInterfacingController extends ApiBasicController {
         super.init();
 
         return postProcess(body, src_trg, api1, params, paths);
-   }
+    }
 
     @PostMapping(path="/instant/{api1}/{api2}/{target}")
     public @ResponseBody Map postFlow2(
@@ -77,8 +77,7 @@ public class InstantInterfacingController extends ApiBasicController {
         super.init();
 
         return postProcess(body, src_trg, api1 + "/" + api2, params, paths);
-   }
-
+    }
 
     @PostMapping(path="/instant/{api1}/{api2}/{api3}/{target}")
     public @ResponseBody Map postFlow3(
@@ -92,7 +91,7 @@ public class InstantInterfacingController extends ApiBasicController {
         super.init();
 
         return postProcess(body, src_trg, api1 + "/" + api2 + "/" + api3, params, paths);
-   }
+    }
 
     private Map postProcess(Map body, String src_trg, String api, Map params, Map paths) throws Exception {
         ChannelAgent agent = getAgent();
@@ -111,6 +110,4 @@ public class InstantInterfacingController extends ApiBasicController {
         return agent.process(current, "/" + api, flow);
     }
 }
-
-
 

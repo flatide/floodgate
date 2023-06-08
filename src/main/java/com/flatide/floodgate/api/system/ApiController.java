@@ -90,7 +90,7 @@ public class ApiController {
             MetaManager.shared().update(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), "ID", data, true);
 
             Map<String, Object> result = new HashMap<>();
-            result.put("resul", "Ok");
+            result.put("result", "Ok");
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,7 +102,7 @@ public class ApiController {
     public @ResponseBody Map delete(
             @RequestParam(required = true) String id) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), (String) data.get("ID"));
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), id);
             
 
             old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API));
@@ -112,7 +112,7 @@ public class ApiController {
             MetaManager.shared().delete(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), id, true);
             
             Map<String, Object> result = new HashMap<>();
-            result.put("resul", "Ok");
+            result.put("result", "Ok");
             return result;
         } catch (Exception e) {
             e.printStackTrace();

@@ -93,7 +93,7 @@ public class DatasourceController {
 
             long cur = System.currentTimeMillis();
             Timestamp current = new Timestamp(cur);
-            data.remove("CREATE_DATE);
+            data.remove("CREATE_DATE");
             data.put("MODIFY_DATE", current);
             MetaManager.shared().update(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), "ID", data, true);
 
@@ -110,7 +110,7 @@ public class DatasourceController {
     public @ResponseBody Map delete(
             @RequestParam(required = true) String id) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), (String) data.get("ID"));
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE), id);
             
 
             old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE));

@@ -24,7 +24,7 @@
 
 package com.flatide.floodgate.api.admin;
 
-import org.springframework.web.bind.annotation;
+import org.springframework.web.bind.annotation.*;
 import com.flatide.floodgate.system.FlowGenerator;
 import java.util.Map;
 

@@ -62,7 +62,7 @@ public class TemplateController {
             data.put("MODIFY_DATE", current);
             MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE), "ID", data, true);
 
-            Map<String, Object> result = new HashMap();
+            Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");
             return result;
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class TemplateController {
     public @ResponseBody Map put(
             @RequestBody Map<String, Object> data) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationoManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE), (String) data.get("ID"));
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE), (String) data.get("ID"));
 
             long cur = System.currentTimeMillis();
             Timestamp current = new Timestamp(cur);
@@ -88,7 +88,7 @@ public class TemplateController {
 
             MetaManager.shared().update(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE), "ID", data, true);
 
-            Map<String, Object> result = new HashMap();
+            Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");
             return result;
         } catch (Exception e) {
@@ -101,7 +101,7 @@ public class TemplateController {
     public @ResponseBody Map delete(
             @RequestParam(required = true) String id) throws Exception {
         try {
-            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE), (String) data.get("ID"));
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE), id);
             
 
             old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE));
@@ -110,7 +110,7 @@ public class TemplateController {
 
             MetaManager.shared().delete(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_TEMPLATE), id, true);
             
-            Map<String, Object> result = new HashMap();
+            Map<String, Object> result = new HashMap<>();
             result.put("result", "Ok");
             return result;
         } catch (Exception e) {

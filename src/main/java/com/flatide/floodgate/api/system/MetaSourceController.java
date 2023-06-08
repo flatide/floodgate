@@ -34,7 +34,7 @@ import java.util.Map;
 @RequestMapping(path="/admin")
 public class MetaSourceController {
     @GetMapping(path="/metasource")
-    public @ReponseBody Map get(
+    public @ResponseBody Map get(
             @RequestParam(required = false) String source,
             @RequestParam(required = false, defaultValue = "false") Boolean reset) throws Exception {
         try {

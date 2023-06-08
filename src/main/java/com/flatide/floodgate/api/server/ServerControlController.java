@@ -30,16 +30,16 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframeowrk.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/server")
-public class ServerController {
+public class ServerControlController {
     @Value("${server.version}") String version;
 
     @RequestMapping(value = "/version", method = RequestMethod.Post)
-    public @ReponseBody Map version() throws Exception {
+    public @ResponseBody Map version() throws Exception {
         try {
             Map<String, Object> result = new HashMap<>();
             result.put("version", version);
