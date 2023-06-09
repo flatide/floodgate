@@ -37,37 +37,37 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpSErvletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path="/api")
 public class GuestAPIController {
     static List<byte[]> holder = new ArrayList<>();
-    @PostMapping(path="/{api})
+    @PostMapping(path="/{api}")
     public @ResponseBody Map postFlow(
         @RequestBody Map<String, Object> data,
         @PathVariable String api,
-        @RequestParam Map<String>, String> params) throws Exception {
+        @RequestParam Map<String, String> params) throws Exception {
         MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
-        long fulluserd = mbean.getHeapMemoryUsage().getUsed();
+        long fullused = mbean.getHeapMemoryUsage().getUsed();
         long fullmax = mbean.getHeapMemoryUsage().getMax();
         long fullfree = fullmax - fullused;
 
         System.out.println(String.format("max: %d, used: %d, free %d", fullmax, fullused, fullfree));
 
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttribues()).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         Enumeration<String> headers = request.getHeaderNames();
         while (headers.hasMoreElements()) {
             String header = headers.nextElement();
-            //if ("client_ip".equals(header) }} "content-type".equals(header) || "content-length".equals(header) || "transfer-encoding".equals(header)) {
+            //if ("client_ip".equals(header) || "content-type".equals(header) || "content-length".equals(header) || "transfer-encoding".equals(header)) {
                 System.out.println(header + " : " + request.getHeader(header));
             //}
         }
         System.out.println();
 
-        FGINputStream current = new FGSharableInputStream(new JSONContainer(data, "HEADER", "ITEMS"));
+        FGInputStream current = new FGSharableInputStream(new JSONContainer(data, "HEADER", "ITEMS"));
 
         ChannelAgent agent = new ChannelAgent();
         agent.addContext(Context.CONTEXT_KEY.REQUEST_PARAMS, params);
@@ -104,7 +104,7 @@ public class GuestAPIController {
         long fullmax = mbean.getHeapMemoryUsage().getMax();
         long fullfree = fullmax - fullused;
 
-        System.out.println(String format("max: %d, used: %d, free %d", fullmax, fullused, fullfree));
+        System.out.println(String.format("max: %d, used: %d, free %d", fullmax, fullused, fullfree));
         
         Map data = new HashMap<>();
         data.put("ITEMS", new ArrayList<>());
@@ -118,7 +118,7 @@ public class GuestAPIController {
     }
 
     @PostMapping(path="/{guest}/{api}/{resource}")
-    public @ResponseBody Map getFlow(
+    public @ResponseBody Map postFlow(
         @RequestBody Map<String, Object> data,
         @PathVariable String guest,
         @PathVariable String api,
@@ -129,24 +129,24 @@ public class GuestAPIController {
         long fullmax = mbean.getHeapMemoryUsage().getMax();
         long fullfree = fullmax - fullused;
 
-        System.out.println(String format("max: %d, used: %d, free %d", fullmax, fullused, fullfree));
+        System.out.println(String.format("max: %d, used: %d, free %d", fullmax, fullused, fullfree));
 
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttribues()).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         Enumeration<String> headers = request.getHeaderNames();
         while (headers.hasMoreElements()) {
             String header = headers.nextElement();
-            //if ("client_ip".equals(header) }} "content-type".equals(header) || "content-length".equals(header) || "transfer-encoding".equals(header)) {
+            //if ("client_ip".equals(header) || "content-type".equals(header) || "content-length".equals(header) || "transfer-encoding".equals(header)) {
                 System.out.println(header + " : " + request.getHeader(header));
             //}
         }
         System.out.println();
         
-        FGInputStream stream = new FGSharableInputStream(new JSONDContainer(data, "HEADER", "ITEMS"));
+        FGInputStream current = new FGSharableInputStream(new JSONContainer(data, "HEADER", "ITEMS"));
 
         ChannelAgent agent = new ChannelAgent();
         agent.addContext(Context.CONTEXT_KEY.REQUEST_PARAMS, params);
         agent.addContext(Context.CONTEXT_KEY.REQUEST_BODY, data);
-        return agent.process(stream, "/" + guest + "/" + api + "/" + resource);
+        return agent.process(current, "/" + guest + "/" + api + "/" + resource);
     }
  }

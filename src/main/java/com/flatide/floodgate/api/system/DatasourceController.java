@@ -56,7 +56,7 @@ public class DatasourceController {
         @RequestBody Map<String, Object> data ) throws Exception {
         try {
             Map<String, Object> d = (Map) data.get("DATA");
-            for (Map.entry e : d.entrySet()) {
+            for (Map.Entry e : d.entrySet()) {
                 String key = (String) e.getKey();
                 if ("PASSWORD".equals(key)) {
                     String value = (String) e.getValue();

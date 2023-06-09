@@ -25,7 +25,7 @@
 package com.flatide.floodgate.api.system;
 
 import com.flatide.floodgate.agent.meta.*;
-import org.srpingframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
