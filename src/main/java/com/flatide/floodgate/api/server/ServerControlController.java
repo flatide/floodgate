@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ServerControlController {
     @Value("${server.version}") String version;
 
-    @RequestMapping(value = "/version", method = RequestMethod.Post)
+    @RequestMapping(value = "/version", method = RequestMethod.POST)
     public @ResponseBody Map version() throws Exception {
         try {
             Map<String, Object> result = new HashMap<>();
