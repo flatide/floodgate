@@ -79,7 +79,7 @@ public class ApiController {
         try {
             String id = (String) data.get("ID");
             Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), id);
-            if (id == null || id.isEmtpy() || old == null) {
+            if (id == null || id.isEmpty() || old == null) {
                 result.put("result", "Fail");
                 result.put("reason", "ID is not exist.");
                 return result;

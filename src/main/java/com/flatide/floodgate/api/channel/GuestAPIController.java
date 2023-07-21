@@ -85,7 +85,7 @@ public class GuestAPIController {
         long fullmax = mbean.getHeapMemoryUsage().getMax();
         long fullfree = fullmax - fullused;
 
-        System.out.println(String format("max: %d, used: %d, free %d", fullmax, fullused, fullfree));
+        System.out.println(String.format("max: %d, used: %d, free %d", fullmax, fullused, fullfree));
         
         Map result = new HashMap<String, byte[]>();
 

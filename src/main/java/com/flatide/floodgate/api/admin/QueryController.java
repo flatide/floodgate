@@ -221,7 +221,7 @@ public class QueryController {
             itemList.add(item);
 
             context.add("ITEM", itemList);
-            Flow flow = new FlowMockup("QUERY GENERATE", data, context);
+            Flow flow = new FlowMockup("QUERY GENERATE", context);
             flow.prepare(data, null);
             flow.process();
 
@@ -230,7 +230,7 @@ public class QueryController {
             result.put("success", true);
             result.put("QUERY", query);
         } catch (Exception e) {
-            e.printStrackTrace();
+            e.printStackTrace();
             result.put("success", false);
             result.put("reason", e.getClass().getName() + " : " + e.getMessage());
         }
