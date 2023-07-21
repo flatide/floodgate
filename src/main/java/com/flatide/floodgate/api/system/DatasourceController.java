@@ -27,6 +27,7 @@ package com.flatide.floodgate.api.system;
 import com.flatide.floodgate.ConfigurationManager;
 import com.flatide.floodgate.FloodgateConstants;
 import com.flatide.floodgate.agent.meta.MetaManager;
+import com.flatide.floodgate.system.security.FloodgateSecurity;
 
 import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
@@ -56,7 +57,7 @@ public class DatasourceController {
         @RequestBody Map<String, Object> data ) throws Exception {
         try {
             Map<String, Object> d = (Map) data.get("DATA");
-            for (Map.Entry e : d.entrySet()) {
+            for (Map.Entry<String, Object> e : d.entrySet()) {
                 String key = (String) e.getKey();
                 if ("PASSWORD".equals(key)) {
                     String value = (String) e.getValue();
@@ -90,6 +91,15 @@ public class DatasourceController {
             old.put("TABLE_NAME", ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_DATASOURCE));
 
             MetaManager.shared().insert(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_META_HISTORY), "ID", old, true);
+            Map<String, Object> d = (Map) data.get("DATA");
+            for (Map.Entry<String, Object> e : d.entrySet()) {
+                String key = (String) e.getKey();
+                if ("PASSWORD".equals(key)) {
+                    String value = (String) e.getValue();
+                    String encrypted = FloodgateSecurity.shared().encrypt(value);
+                    e.setValue(encrypted);
+                }
+            }
 
             long cur = System.currentTimeMillis();
             Timestamp current = new Timestamp(cur);

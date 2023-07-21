@@ -109,7 +109,7 @@ public class GuestAPIController {
         Map data = new HashMap<>();
         data.put("ITEMS", new ArrayList<>());
 
-        FGInputStream stream = new FGSharableInputStream(new JSONDContainer(data, "HEADER", "ITEMS"));
+        FGInputStream stream = new FGSharableInputStream(new JSONContainer(data, "HEADER", "ITEMS"));
 
         ChannelAgent agent = new ChannelAgent();
         agent.addContext(Context.CONTEXT_KEY.REQUEST_PARAMS, params);

@@ -118,6 +118,9 @@ public class QueryController {
 
                 String condition = (String) execInfo.get("EXTRACT_CONDITION");
                 if (condition != null && !condition.isEmpty()) {
+                    if (condition.trim().startsWith("WHERE")) {
+                        condition = condition.trim().substring(5).trim();
+                    }
                     query += " WHERE " + condition;
                 }
                 result.put("success", true);
@@ -218,7 +221,8 @@ public class QueryController {
             itemList.add(item);
 
             context.add("ITEM", itemList);
-            Flow flow = new FlowMockup("QUERY GENERATE", data, context, null);
+            Flow flow = new FlowMockup("QUERY GENERATE", data, context);
+            flow.prepare(data, null);
             flow.process();
 
             String query = context.getString("QUERY");
@@ -226,6 +230,7 @@ public class QueryController {
             result.put("success", true);
             result.put("QUERY", query);
         } catch (Exception e) {
+            e.printStrackTrace();
             result.put("success", false);
             result.put("reason", e.getClass().getName() + " : " + e.getMessage());
         }

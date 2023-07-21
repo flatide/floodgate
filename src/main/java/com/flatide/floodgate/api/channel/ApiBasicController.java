@@ -33,19 +33,14 @@ import com.flatide.floodgate.agent.ChannelAgent;
 import com.flatide.floodgate.agent.Context;
 
 public class ApiBasicController {
-    private ChannelAgent agent;
-
     public ApiBasicController() {
-        this.agent = new ChannelAgent();
     }
 
-    public void init() {
+    protected void init(ChannelAgent agent) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         agent.addContext(Context.CONTEXT_KEY.HTTP_REQUEST_METHOD, request.getMethod());
-    }
 
-    public ChannelAgent getAgent() {
-        return this.agent;
+        String headerMessageId = request.getHeader("MessageID");
+        agent.addContext(Context.CONTEXT_KEY.CHANNEL_ID, headerMessageId);
     }
 }
-       

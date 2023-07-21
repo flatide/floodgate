@@ -14,7 +14,7 @@ application:
   version: 'V@project.version@'
 
 server:
-  title: Floodate
+  title: '@project.name@'
   version: '@project.version@-@spring.profiles.active@'
   servlet:
     context-path: /
@@ -26,6 +26,13 @@ server:
     include-exception: false
   tomcat:
     max-http-form-post-size: 100MB
+    accesslog:
+      directory: logs
+      enabled: false
+      suffix: .log
+      prefix: access_log
+      file-date-format: yyyy-MM-dd
+      pattern: common
 
 management:
   endpoint:
@@ -41,6 +48,11 @@ management:
 logging:
   level:
     root: info
+  file:
+    #path: /tmp/logs
+    name: '/tmp/logs/floodgate.log'
+    max-size: 50MB
+    max-history: 7
 
 floodgate:
   config:
@@ -177,3 +189,4 @@ floodgate:
        url: jdbc:h2:file:./floodgate
        user: floodgate
        password: password
+       maxPoolSize: 4

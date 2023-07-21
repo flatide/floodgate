@@ -27,9 +27,10 @@ package com.flatide.floodgate;
 import com.flatide.floodgate.ConfigBase;
 import com.flatide.floodgate.ConfigurationManager;
 import com.flatide.floodgate.Floodgate;
+import com.flatide.floodgate.agent.handler.FloodgatehandlerManager;
 import com.flatide.floodgate.system.security.FloodgateSecurity;
-import com.flatide.floodgate.system.security.SecurityProvider;
 
+import com.flatdie.floodgate.system.DBLogHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -56,6 +57,9 @@ public class FloodgateApplication {
             //FloodgateSecurity.shared().setSecurityProvider(provider);
 
             Floodgate.init();
+
+            DBLogHandler handler = new DBLogHandler();
+            FloodgatehandlerManager.share().addhandler("DB Log Handler", handler);
         } catch(Exception e) {
             e.printStackTrace();
         }

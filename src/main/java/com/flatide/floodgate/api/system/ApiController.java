@@ -74,8 +74,16 @@ public class ApiController {
     @PutMapping(path="/api")
     public @ResponseBody Map put(
         @RequestBody Map<String, Object> data) throws Exception {
+
+        Map<String, Object> result = new HashMap<>();
         try {
-            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), (String) data.get("ID"));
+            String id = (String) data.get("ID");
+            Map old = MetaManager.shared().read(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), id);
+            if (id == null || id.isEmtpy() || old == null) {
+                result.put("result", "Fail");
+                result.put("reason", "ID is not exist.");
+                return result;
+            }
 
             long cur = System.currentTimeMillis();
             Timestamp current = new Timestamp(cur);
@@ -89,12 +97,14 @@ public class ApiController {
 
             MetaManager.shared().update(ConfigurationManager.shared().getString(FloodgateConstants.META_SOURCE_TABLE_FOR_API), "ID", data, true);
 
-            Map<String, Object> result = new HashMap<>();
+
             result.put("result", "Ok");
             return result;
         } catch (Exception e) {
+            result.put("result", "Fail");
+            result.put("reason", e.getMessage());
             e.printStackTrace();
-            throw e;
+            return result;
         }
     }
 

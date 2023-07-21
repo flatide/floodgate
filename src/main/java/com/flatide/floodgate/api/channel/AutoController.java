@@ -42,8 +42,8 @@ public class AutoController extends ApiBasicController {
             @PathVariable String api,
             @PathVariable Map<String, String> paths,
             @RequestParam Map<String, String> params) throws Exception {
-        super.init();
-        ChannelAgent agent = getAgent();
+        ChannelAgent agent = new ChannelAgent();
+        super.init(agent);
 
         agent.addContext(Context.CONTEXT_KEY.REQUEST_PATH_VARIABLES, paths);
         agent.addContext(Context.CONTEXT_KEY.REQUEST_PARAMS, params);
@@ -57,8 +57,8 @@ public class AutoController extends ApiBasicController {
             @PathVariable String api,
             @PathVariable Map<String, String> paths,
             @RequestParam Map<String, String> params) throws Exception {
-        super.init();
-        ChannelAgent agent = getAgent();
+        ChannelAgent agent = new ChannelAgent();
+        super.init(agent);
 
         FGInputStream current = new FGSharableInputStream(new JSONContainer(data, "HEADER", "ITEMS"));
 
@@ -69,4 +69,3 @@ public class AutoController extends ApiBasicController {
         return agent.process(current, "/" + api);
     }
 }
-
