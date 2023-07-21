@@ -59,7 +59,7 @@ public class FloodgateApplication {
             Floodgate.init();
 
             DBLogHandler handler = new DBLogHandler();
-            FloodgateHandlerManager.share().addHandler("DB Log Handler", handler);
+            FloodgateHandlerManager.shared().addHandler("DB Log Handler", handler);
         } catch(Exception e) {
             e.printStackTrace();
         }

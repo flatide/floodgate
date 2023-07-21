@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.flatide.floodgate.agent.handler;
+package com.flatide.floodgate.system;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
