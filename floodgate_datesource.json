@@ -1,0 +1,11 @@
+{
+    "ID": "TEST_CONNECTION",
+    "DATA": {
+        "CONNECTION": "JDBC",
+        "DBTYPE": "mysql",
+        "URL": "",
+        "USER": "",
+        "PASSWORD": "",
+        "POOLING": false
+    }
+}

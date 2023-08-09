@@ -1,0 +1,10 @@
+{
+    "ID": "/api/test",
+    "DATA": {
+        "BACKUP_PAYLOAD": false,
+        "CONCURRENCY": {
+            "ENABLE": false,
+            "THREAD_MAX": 4
+        }
+    }
+}

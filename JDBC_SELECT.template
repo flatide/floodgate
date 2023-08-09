@@ -1,0 +1,7 @@
+#header
+SELECT FROM {SEQUENCE.TARGET} (
+    #column delimiter=", "
+?SOURCE?
+    #end
+FROM {SEQUENCE.TARGET}
+#end

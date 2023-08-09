@@ -1,0 +1,32 @@
+{
+    "ID": "IF_TEST",
+    "DATA": {
+        "ENTRY": "ENTRY",
+        "META": {
+            "DEBUG": false,
+            "ITEMS": "ITEMS"
+        },
+        "MODULE": {
+            "ENTRY": {
+                "BEFORE": {
+                    "FILTER": "PRE_FILTER"
+                },
+                "AFTER": {},
+                "ACTION": {},
+                "CONNECT": "TEST_CONNECTION",
+                "TEMPLATE": "",
+                "OUTPUT": "FLOODGATE_TEST",
+                "BATCH_SIZE": 3000,
+                "RULE": "RULE"
+            }
+        },
+        "RULE": {
+            "RULE": {
+                "COL_VARCHAR": "+nvl($CODE$,$SQ$)",
+                "COL_DATETIME": ">TARGET_DATE",
+                "COL_NUMBER:NUMBER": "{CHANNEL_CONTEXT.REQUEST_PARAMS.totalcount}",
+                "COL_CHAR": "+'Y''"
+            }
+        }
+    }
+}
