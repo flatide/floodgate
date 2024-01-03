@@ -1,0 +1,14 @@
+#header
+    #column delimiter='{FLOW.META.DELIMITER}'
+?TARGET?
+    #end
+    #br
+#end
+#body
+    #row  delimiter='\r\n'
+        #column delimiter='{FLOW.META.DELIMITER}' ignoreType='true' \
+        if='true' then='replace:" ""' if='regx:{FLOW.META.DELIMITER}|"|\r|\n' then='replace:$ "$"'
+$SOURCE$
+        #end
+    #end
+#end
