@@ -1,0 +1,35 @@
+#header
+{
+    #br
+    #if condition='{FLOW.META.TEST1}{FLOW.META.TEST2}'
+        #if condition='false'
+    "CONDITION-FALSE":
+        #else
+            #if condition='true'
+    "{FLOW.ITEMS}":
+            #end
+        #end
+    #else
+    "TEST_{FLOW.MODULE.MYSQL.OUTPUT}":
+    #end
+    [
+    #br
+#end
+#body
+    #row delimiter="{FLOW.META.DELIMITER}"
+        {
+        #br
+            #column delimiter=",\r\n" if='regx:\n|\r|\t|\b|"'   \         
+            then='escape:#'
+            "?TARGET?" : $SOURCE$
+            #end
+        #br
+        }
+    #end
+#end
+#footer
+    #br
+    ],
+    "TEST_{FLOW.META.DEBUG}": "{FLOW.META.DEBUG}"
+}
+#end
