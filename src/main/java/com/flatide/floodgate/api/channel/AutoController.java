@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping(path="/api")
+@RequestMapping(path="/channel")
 public class AutoController extends ApiBasicController {
     @GetMapping(path="/{api}/{target}")
     public @ResponseBody Map get(

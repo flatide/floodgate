@@ -37,7 +37,7 @@ import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping(path="/admin")
+@RequestMapping(path="/system")
 public class DatasourceController {
     @GetMapping(path="/datasource")
     public @ResponseBody List get(

@@ -36,7 +36,7 @@ import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping(path="/admin")
+@RequestMapping(path="/system")
 public class TemplateController {
     @GetMapping(path="/template")
     public @ResponseBody List get(
